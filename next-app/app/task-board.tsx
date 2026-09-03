@@ -5,11 +5,13 @@ import { FormEvent, useEffect, useMemo, useState } from 'react'
 type Task = { id: number; title: string; done: boolean }
 
 export function TaskBoard() {
+  // 'use client' を宣言したこのコンポーネントだけで、React hooks とイベントを使えます。
   const [tasks, setTasks] = useState<Task[]>([])
   const [title, setTitle] = useState('')
   const remaining = useMemo(() => tasks.filter((task) => !task.done).length, [tasks])
 
   useEffect(() => {
+    // 初回マウント後に Route Handler からデータを取得します。
     fetch('/api/tasks').then((response) => response.json()).then(setTasks)
   }, [])
 
@@ -17,6 +19,7 @@ export function TaskBoard() {
     event.preventDefault()
     if (!title.trim()) return
 
+    // フォームの状態を POST し、返却された task を React state に反映します。
     const response = await fetch('/api/tasks', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

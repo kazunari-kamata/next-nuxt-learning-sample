@@ -15,6 +15,7 @@ npm run dev:nuxt  # http://localhost:3001
 
 ```bash
 npm run typecheck
+npm run test
 npm run build
 ```
 
@@ -37,3 +38,5 @@ npm run build
 4. それぞれに詳細ページを追加して、動的ルート（Next: `[id]`、Nuxt: `[id].vue`）を試してください。
 
 > データは各開発サーバーのメモリ内にだけ保存されます。サーバーを再起動すると初期化されます。学習に集中するため、DB や認証は含めていません。
+
+詳細な読み方、ライフサイクルの違い、テストの対応は [比較ガイド](docs/comparison-guide.md) を参照してください。

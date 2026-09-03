@@ -1,11 +1,10 @@
-import { getTasks } from './tasks.get'
+import { addTask } from '../utils/tasks'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ title?: string }>(event)
   const title = body?.title?.trim()
   if (!title) throw createError({ statusCode: 400, statusMessage: 'title is required' })
 
-  const task = { id: Date.now(), title, done: false }
-  getTasks().push(task)
-  return task
+  // Nuxt/Nitro でも HTTP 処理と状態操作を分けると、後者を単体テストできます。
+  return addTask(title)
 })

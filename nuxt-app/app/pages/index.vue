@@ -1,12 +1,15 @@
 <script setup lang="ts">
 type Task = { id: number; title: string; done: boolean }
 
+// Nuxt は ref / computed を auto-import するため、Vue import を書かずに状態を宣言できます。
 const title = ref('')
+// useFetch は SSR の結果を payload に引き継ぐので、hydrate 時の重複取得を避けられます。
 const { data: tasks, refresh } = await useFetch<Task[]>('/api/tasks', { default: () => [] })
 const remaining = computed(() => tasks.value.filter((task) => !task.done).length)
 
 async function addTask() {
   if (!title.value.trim()) return
+  // 更新後に useFetch の refresh を呼び、SSR と同じデータソースから一覧を更新します。
   await $fetch('/api/tasks', { method: 'POST', body: { title: title.value } })
   title.value = ''
   await refresh()

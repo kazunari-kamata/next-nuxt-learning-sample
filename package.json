@@ -1,11 +1,18 @@
 {
   "name": "next-nuxt-learning-sample",
   "private": true,
-  "workspaces": ["next-app", "nuxt-app"],
+  "workspaces": [
+    "next-app",
+    "nuxt-app"
+  ],
   "scripts": {
     "dev:next": "npm run dev --workspace=next-app",
     "dev:nuxt": "npm run dev --workspace=nuxt-app",
     "build": "npm run build --workspaces",
-    "typecheck": "npm run typecheck --workspaces"
+    "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test --workspaces"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.11"
   }
 }

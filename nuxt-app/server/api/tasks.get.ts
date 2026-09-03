@@ -1,9 +1,4 @@
-type Task = { id: number; title: string; done: boolean }
+import { listTasks } from '../utils/tasks'
 
-const tasks: Task[] = [{ id: 1, title: 'Next.js と Nuxt の対応を比べる', done: false }]
-
-export function getTasks() {
-  return tasks
-}
-
-export default defineEventHandler(() => getTasks())
+// Nitro はファイル名の .get を GET /api/tasks に対応付けます。
+export default defineEventHandler(() => listTasks())
