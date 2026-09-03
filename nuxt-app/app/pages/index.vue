@@ -1,0 +1,43 @@
+<script setup lang="ts">
+type Task = { id: number; title: string; done: boolean }
+
+const title = ref('')
+const { data: tasks, refresh } = await useFetch<Task[]>('/api/tasks', { default: () => [] })
+const remaining = computed(() => tasks.value.filter((task) => !task.done).length)
+
+async function addTask() {
+  if (!title.value.trim()) return
+  await $fetch('/api/tasks', { method: 'POST', body: { title: title.value } })
+  title.value = ''
+  await refresh()
+}
+</script>
+
+<template>
+  <main>
+    <p class="eyebrow">Vue + File-based Routing</p>
+    <h1>Nuxt のタスク一覧</h1>
+    <p>このページでは <code>useFetch</code> で SSR 対応のデータ取得を行います。</p>
+    <section class="card">
+      <h2>Vue SFC: pages/index.vue</h2>
+      <form @submit.prevent="addTask">
+        <input v-model="title" aria-label="タスク名" placeholder="例: ルーティングを比較する">
+        <button type="submit">追加</button>
+      </form>
+      <p>未完了: {{ remaining }} 件</p>
+      <ul><li v-for="task in tasks" :key="task.id">{{ task.done ? '✓' : '○' }} {{ task.title }}</li></ul>
+    </section>
+  </main>
+</template>
+
+<style>
+:root { color: #1f2937; background: #f8fafc; font-family: system-ui, sans-serif; }
+body { margin: 0; }
+main { max-width: 680px; margin: 4rem auto; padding: 0 1.5rem; }
+.eyebrow { color: #047857; font-weight: 700; }
+.card { margin-top: 2rem; padding: 1.5rem; border-radius: 12px; background: white; box-shadow: 0 4px 20px #0f172a12; }
+form { display: flex; gap: .5rem; }
+input { flex: 1; min-width: 0; padding: .65rem; border: 1px solid #94a3b8; border-radius: 6px; }
+button { padding: .65rem 1rem; border: 0; border-radius: 6px; background: #047857; color: white; cursor: pointer; }
+li { margin: .5rem 0; }
+</style>
