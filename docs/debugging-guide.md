@@ -13,6 +13,21 @@ NUXT_PUBLIC_DEBUG_MODE=true npm run dev:nuxt:debug
 
 VS Code を使う場合は、このリポジトリの `.vscode/launch.json` にある `Attach: Next.js server (9229)` または `Attach: Nuxt server (9230)` を選ぶだけで attach できます。
 
+## デバッグ時の全体像
+
+```mermaid
+flowchart TD
+  Start[debug コマンドを起動] --> Next[Next.js<br/>Inspector :9229]
+  Start --> Nuxt[Nuxt --no-fork<br/>Inspector :9230]
+  Next --> AttachNext[VS Code / Chrome で attach]
+  Nuxt --> AttachNuxt[VS Code / Chrome で attach]
+  AttachNext --> Breakpoint[Route Handler / store に breakpoint]
+  AttachNuxt --> Breakpoint
+  Browser[ブラウザで画面更新・タスク追加] --> Breakpoint
+  Browser --> Inspector[Debug mode: client state]
+  Breakpoint --> Logs[ターミナルの API log]
+```
+
 ## 画面で観察する
 
 環境変数を有効にすると、タスク一覧の下に `Debug mode: client state` が表示されます。次を順に観察してください。
@@ -33,6 +48,30 @@ Next.js は `NEXT_PUBLIC_DEBUG_MODE=true`、Nuxt は `NUXT_PUBLIC_DEBUG_MODE=tru
 | 状態変更 | `next-app/app/api/tasks/store.ts` の `addTask` | `nuxt-app/server/utils/tasks.ts` の `addTask` |
 
 API handler に breakpoint を置いた後、画面を更新またはタスクを追加してください。Next.js では HTTP メソッドごとの export に入り、Nuxt ではファイル名に対応する Nitro handler に入ることを確認できます。
+
+## タスク追加をステップ実行する順番
+
+```mermaid
+sequenceDiagram
+  participant Browser
+  participant UI as Client UI
+  participant API as API handler
+  participant Store as task store
+
+  Browser->>UI: タスクを入力して「追加」
+  UI->>UI: requestStatus = loading
+  UI->>API: POST /api/tasks
+  API->>Store: addTask(title)
+  Store-->>API: new task
+  API-->>UI: 201 JSON response
+  alt Next.js
+    UI->>UI: setTasksでtaskを追加
+  else Nuxt
+    UI->>API: refresh() → GET /api/tasks
+    API-->>UI: task list
+  end
+  UI->>UI: requestStatus = success
+```
 
 ## ログとテスト
 

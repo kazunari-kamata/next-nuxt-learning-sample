@@ -19,6 +19,28 @@ Next.js の `page.tsx` は標準で Server Component です。`useState` や `us
 
 Nuxt の `index.vue` は、template と `<script setup lang="ts">` を一つの Single File Component（SFC）に置きます。`ref` は変更可能な状態、`computed` はそこから計算した状態です。template 側では `{{ remaining }}` と `v-for` で表示します。Nuxt の auto-import により、`ref` や `computed` を明示 import していない点にも注目してください。
 
+## タスク追加の処理フロー
+
+同じ操作でも、画面の状態を更新するタイミングが異なります。Next.js は POST のレスポンスを React state に直接追加し、Nuxt は `refresh()` で API から一覧を再取得します。
+
+```mermaid
+flowchart LR
+  subgraph next[Next.js]
+    NUI[TaskBoard<br/>Client Component] -->|POST /api/tasks| NAPI[route.ts<br/>POST export]
+    NAPI --> NSTORE[store.ts<br/>addTask]
+    NSTORE -->|作成した task| NUI
+    NUI -->|setTasks| NSTATE[React state]
+  end
+
+  subgraph nuxt[Nuxt]
+    UUI[index.vue<br/>Vue SFC] -->|POST /api/tasks| UAPI[tasks.post.ts<br/>Nitro handler]
+    UAPI --> USTORE[tasks.ts<br/>addTask]
+    USTORE -->|201 response| UUI
+    UUI -->|refresh| UGET[tasks.get.ts<br/>Nitro handler]
+    UGET --> UUI
+  end
+```
+
 ## データ取得の違い
 
 Next.js は Client Component がマウントされた後、`useEffect` 内の `fetch('/api/tasks')` で一覧を取得します。追加した task は POST のレスポンスをそのまま `setTasks` へ加えます。
@@ -30,6 +52,18 @@ Nuxt はページのトップレベルで `await useFetch('/api/tasks')` を使�
 Next.js App Router は `route.ts` の export 名で HTTP メソッドを決めます。`export function GET` と `export async function POST` が `/api/tasks` を処理します。
 
 Nuxt の Nitro はファイル名で HTTP メソッドを決めます。`tasks.get.ts` は GET、`tasks.post.ts` は POST です。`defineEventHandler` が handler を作り、`readBody` と `createError` は Nuxt/Nitro の auto-import です。
+
+```mermaid
+flowchart TD
+  Request[HTTP request] --> Choice{フレームワーク}
+  Choice -->|Next.js| NextPath[app/api/tasks/route.ts]
+  NextPath --> NextMethod[GET / POST export]
+  Choice -->|Nuxt| NuxtPath[server/api/tasks.get.ts<br/>server/api/tasks.post.ts]
+  NuxtPath --> NuxtHandler[defineEventHandler]
+  NextMethod --> Store[task store]
+  NuxtHandler --> Store
+  Store --> Response[JSON response]
+```
 
 ## テストの読み方
 
