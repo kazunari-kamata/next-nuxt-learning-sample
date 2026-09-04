@@ -7,6 +7,12 @@ type RequestStatus = 'idle' | 'loading' | 'success' | 'error'
 
 const debugMode = process.env.NEXT_PUBLIC_DEBUG_MODE === 'true'
 
+/**
+ * Displays and updates tasks from the Next.js Route Handler.
+ *
+ * This Client Component deliberately contains hooks and browser events so that
+ * they can be compared with the Vue component in the Nuxt sample.
+ */
 export function TaskBoard() {
   // 'use client' を宣言したこのコンポーネントだけで、React hooks とイベントを使えます。
   const [tasks, setTasks] = useState<Task[]>([])

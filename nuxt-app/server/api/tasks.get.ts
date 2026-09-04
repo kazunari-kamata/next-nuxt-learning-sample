@@ -1,6 +1,6 @@
 import { listTasks } from '../utils/tasks'
 
-// Nitro はファイル名の .get を GET /api/tasks に対応付けます。
+/** Handles GET /api/tasks through Nuxt's file-based Nitro routing. */
 export default defineEventHandler((event) => {
   const tasks = listTasks()
   if (String(useRuntimeConfig(event).public.debugMode) === 'true') {

@@ -79,6 +79,8 @@ GitHub Actions は push と pull request で次を実行します。
 2. production dependency の高重要度以上の脆弱性検査
 3. TypeScript 型検査
 4. Vitest のテスト
-5. Next.js / Nuxt の production build
+5. TypeDoc による API 資料の生成
+6. Playwright による両アプリのブラウザテスト
+7. Next.js / Nuxt の production build
 
 Dependabot は npm 依存関係と GitHub Actions を週次で監視します。

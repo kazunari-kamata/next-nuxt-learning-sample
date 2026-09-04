@@ -36,6 +36,15 @@ jobs:
       - name: Test
         run: npm run test
 
+      - name: Generate API documentation
+        run: npm run docs:api
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser test
+        run: npm run test:e2e
+
       - name: Production build
         run: npm run build
 
@@ -56,4 +65,14 @@ jobs:
         run: node scripts/check-no-credentials.mjs
 
       - name: Audit production dependencies
-        run: npm audit --omit=dev --audit-level=high
+        # npm registry の一時的な timeout ではなく、監査結果に基づいて成否を判定します。
+        # 3 回とも失敗した場合は、監査できない状態として job を失敗させます。
+        run: |
+          for attempt in 1 2 3; do
+            npm audit --omit=dev --audit-level=high && exit 0
+            if [ "$attempt" -lt 3 ]; then
+              echo "npm audit failed; retrying in 15 seconds (attempt ${attempt}/3)..."
+              sleep 15
+            fi
+          done
+          exit 1

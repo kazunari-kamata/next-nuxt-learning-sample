@@ -4,11 +4,17 @@ type Task = { id: number; title: string; done: boolean }
 // Nuxt は ref / computed を auto-import するため、Vue import を書かずに状態を宣言できます。
 const title = ref('')
 const requestStatus = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
+// SSR の静的 HTML が表示された後、onMounted で Vue のイベント処理が接続されたことを示します。
+const isInteractive = ref(false)
 // useFetch は SSR の結果を payload に引き継ぐので、hydrate 時の重複取得を避けられます。
 const { data: tasks, refresh } = await useFetch<Task[]>('/api/tasks', { default: () => [] })
 const remaining = computed(() => tasks.value.filter((task) => !task.done).length)
 const debugMode = String(useRuntimeConfig().public.debugMode) === 'true'
 const debugSnapshot = computed(() => JSON.stringify({ requestStatus: requestStatus.value, tasks: tasks.value }, null, 2))
+
+onMounted(() => {
+  isInteractive.value = true
+})
 
 async function addTask() {
   if (!title.value.trim()) return
@@ -33,7 +39,7 @@ async function addTask() {
     <p>このページでは <code>useFetch</code> で SSR 対応のデータ取得を行います。</p>
     <section class="card">
       <h2>Vue SFC: pages/index.vue</h2>
-      <form @submit.prevent="addTask">
+      <form data-testid="task-form" :data-interactive="isInteractive" @submit.prevent="addTask">
         <input v-model="title" aria-label="タスク名" placeholder="例: ルーティングを比較する">
         <button type="submit">追加</button>
       </form>

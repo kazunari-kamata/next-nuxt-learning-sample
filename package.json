@@ -14,10 +14,14 @@
     "dev:nuxt:debug": "npm run dev:debug --workspace=nuxt-app",
     "build": "npm run build --workspaces",
     "typecheck": "npm run typecheck --workspaces",
-    "test": "npm run test --workspaces"
+    "test": "npm run test --workspaces",
+    "test:e2e": "playwright test",
+    "docs:api": "typedoc"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "concurrently": "^9.2.4",
+    "typedoc": "^0.28.20",
     "typescript": "~5.9.3",
     "vitest": "^4.1.11"
   }
