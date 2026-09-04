@@ -1,11 +1,24 @@
 {
   "name": "next-nuxt-learning-sample",
   "private": true,
-  "workspaces": ["next-app", "nuxt-app"],
+  "workspaces": [
+    "next-app",
+    "nuxt-app"
+  ],
   "scripts": {
+    "dev": "concurrently --kill-others-on-fail --names next,nuxt \"npm run dev:next\" \"npm run dev:nuxt\"",
     "dev:next": "npm run dev --workspace=next-app",
     "dev:nuxt": "npm run dev --workspace=nuxt-app",
+    "dev:debug": "concurrently --kill-others-on-fail --names next,nuxt \"DEBUG_SAMPLE=true NEXT_PUBLIC_DEBUG_MODE=true npm run dev:next:debug\" \"NUXT_PUBLIC_DEBUG_MODE=true npm run dev:nuxt:debug\"",
+    "dev:next:debug": "npm run dev:debug --workspace=next-app",
+    "dev:nuxt:debug": "npm run dev:debug --workspace=nuxt-app",
     "build": "npm run build --workspaces",
-    "typecheck": "npm run typecheck --workspaces"
+    "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test --workspaces"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.4",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.11"
   }
 }

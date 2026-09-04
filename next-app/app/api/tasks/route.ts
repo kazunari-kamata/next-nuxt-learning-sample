@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server'
+import { addTask, listTasks } from './store'
 
-type Task = { id: number; title: string; done: boolean }
-
-let tasks: Task[] = [{ id: 1, title: 'Next.js と Nuxt の対応を比べる', done: false }]
+function debugLog(message: string, context?: unknown) {
+  if (process.env.DEBUG_SAMPLE === 'true') console.debug(`[Next API] ${message}`, context ?? '')
+}
 
 export function GET() {
+  // App Router の Route Handler は HTTP メソッド名を export して API を定義します。
+  const tasks = listTasks()
+  debugLog('GET /api/tasks', { count: tasks.length })
   return NextResponse.json(tasks)
 }
 
@@ -13,7 +17,8 @@ export async function POST(request: Request) {
   const title = body.title?.trim()
   if (!title) return NextResponse.json({ message: 'title is required' }, { status: 400 })
 
-  const task = { id: Date.now(), title, done: false }
-  tasks = [...tasks, task]
+  // HTTP 層は request/response に集中させ、状態操作はテストしやすい store に分離します。
+  const task = addTask(title)
+  debugLog('POST /api/tasks', task)
   return NextResponse.json(task, { status: 201 })
 }

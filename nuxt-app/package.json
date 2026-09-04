@@ -4,13 +4,15 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt dev --port 3001",
+    "dev:debug": "NODE_OPTIONS=--inspect=9230 nuxt dev --port 3001 --no-fork",
     "build": "nuxt build",
     "start": "node .output/server/index.mjs",
-    "typecheck": "nuxt prepare && nuxt typecheck"
+    "typecheck": "nuxt prepare && nuxt typecheck",
+    "test": "vitest run"
   },
   "devDependencies": {
     "nuxt": "^4.5.2",
-    "typescript": "^5.8.0",
-    "vue-tsc": "^3.0.0"
+    "typescript": "~5.9.3",
+    "vue-tsc": "^3.3.11"
   }
 }
