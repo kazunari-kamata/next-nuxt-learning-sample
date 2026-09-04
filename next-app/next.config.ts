@@ -6,4 +6,5 @@ const nextConfig: NextConfig = {
   agentRules: false,
 }
 
+/** Next.js configuration used by the learning sample. */
 export default nextConfig

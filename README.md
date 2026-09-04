@@ -22,8 +22,39 @@ npm run dev
 ```bash
 npm run typecheck
 npm run test
+npm run test:e2e
+npm run docs:api
 npm run build
 ```
+
+## API ドキュメントとブラウザテスト
+
+公開している TypeScript の型・関数には JSDoc を付け、TypeDoc で API リファレンスを生成できます。
+
+```bash
+npm run docs:api
+```
+
+生成先は `docs/api/` です。生成物は再作成可能なため Git には含めません。TypeDoc の対象は、両フレームワークで対応するメモリ内 task store です。
+
+Playwright は実際に Chromium を開き、Next.js と Nuxt の両画面でタスクを追加できることを確認します。初回だけブラウザ本体をインストールしてください。
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+macOS 12 では Playwright の Chromium 配布物を取得できないため、設定済みのローカル Google Chrome を使います。Chrome がない環境、または CI では上記の Chromium を使います。
+
+```mermaid
+flowchart LR
+  PW[Playwright] --> N[Next.js :3000]
+  PW --> U[Nuxt :3001]
+  N --> NA[Next Route Handler]
+  U --> NB[Nuxt Nitro Handler]
+```
+
+`npm run test:e2e` は必要に応じて二つの開発サーバーを起動し、テスト終了後に停止します。普段の開発サーバーを既に起動している場合は、それを再利用します。
 
 ## デバッグ学習モード
 
@@ -65,3 +96,5 @@ GitHub の Languages は**プログラミング言語**をファイル拡張子�
 > データは各開発サーバーのメモリ内にだけ保存されます。サーバーを再起動すると初期化されます。学習に集中するため、DB や認証は含めていません。
 
 詳細な読み方、ライフサイクルの違い、テストの対応は [比較ガイド](docs/comparison-guide.md) を参照してください。
+
+要件定義、基本設計、詳細設計、実装・テスト・レビューまでを一つのプロジェクトとして追うには、[プロジェクトフローガイド](docs/project-lifecycle-guide.md) を参照してください。

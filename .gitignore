@@ -3,4 +3,8 @@ node_modules/
 .nuxt/
 .output/
 dist/
+docs/api/
+playwright-report/
+test-results/
+blob-report/
 *.tsbuildinfo

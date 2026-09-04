@@ -1,0 +1,12 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Next.js / Nuxt Task API Reference",
+  "entryPoints": [
+    "next-app/app/api/tasks/store.ts",
+    "nuxt-app/server/utils/tasks.ts"
+  ],
+  "out": "docs/api",
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeInternal": true
+}
