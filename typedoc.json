@@ -8,5 +8,9 @@
   "out": "docs/api",
   "readme": "none",
   "excludePrivate": true,
-  "excludeInternal": true
+  "excludeInternal": true,
+  "validation": {
+    "notDocumented": true
+  },
+  "treatValidationWarningsAsErrors": true
 }
