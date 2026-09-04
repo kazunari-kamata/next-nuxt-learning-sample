@@ -8,11 +8,14 @@
   "scripts": {
     "dev:next": "npm run dev --workspace=next-app",
     "dev:nuxt": "npm run dev --workspace=nuxt-app",
+    "dev:next:debug": "npm run dev:debug --workspace=next-app",
+    "dev:nuxt:debug": "npm run dev:debug --workspace=nuxt-app",
     "build": "npm run build --workspaces",
     "typecheck": "npm run typecheck --workspaces",
     "test": "npm run test --workspaces"
   },
   "devDependencies": {
+    "typescript": "~5.9.3",
     "vitest": "^4.1.11"
   }
 }

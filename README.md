@@ -19,6 +19,20 @@ npm run test
 npm run build
 ```
 
+## デバッグ学習モード
+
+通常の開発サーバーのほかに、Node.js Inspector を有効にするコマンドを用意しています。Next.js は `9229`、Nuxt は `9230` を使うため、同時に起動できます。
+
+```bash
+# ターミナル 1: http://localhost:3000 / Chrome DevTools または VS Code で localhost:9229 に attach
+DEBUG_SAMPLE=true NEXT_PUBLIC_DEBUG_MODE=true npm run dev:next:debug
+
+# ターミナル 2: http://localhost:3001 / Chrome DevTools または VS Code で localhost:9230 に attach
+NUXT_PUBLIC_DEBUG_MODE=true npm run dev:nuxt:debug
+```
+
+`*_PUBLIC_DEBUG_MODE=true` は画面に API の取得状態と task state を表示します。Next.js 側の `DEBUG_SAMPLE=true` は Route Handler のログもターミナルに出します。Nuxt は `NUXT_PUBLIC_DEBUG_MODE=true` で Nitro handler のログも確認できます。詳しい breakpoint の置き方は [デバッグガイド](docs/debugging-guide.md) を参照してください。
+
 ## 同じ機能、異なる書き方
 
 | 観点 | Next.js | Nuxt |
