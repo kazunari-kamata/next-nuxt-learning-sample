@@ -80,6 +80,8 @@ GitHub Actions は pull request と `main` への push で次を実行する。
 
 Dependabot で npm と GitHub Actions を定期監視する。生成物、資格情報、実際の secret をコミットしない。
 
+プロジェクト計画とサービス運用まで扱う場合の価値・変更・改善の考え方は、[PMBOK / ITIL の実践ガイド](governance-and-service-management.md) を参照する。
+
 ## 検証
 
 ```bash

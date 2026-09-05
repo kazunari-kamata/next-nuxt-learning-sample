@@ -13,7 +13,8 @@ metadata:
 
 1. 対象リポジトリの `AGENTS.md`、`README.md`、既存の CI と package scripts を読む。
 2. 新規構築または大きな再構築では [project blueprint](references/project-blueprint.md) を読む。
-3. ユーザーが別の機能を指定しない限り、blueprint の範囲を超えて認証、DB、デプロイ、UI ライブラリを導入しない。
+3. プロジェクト計画、サービス運用、リリース、継続的改善を扱う場合は [PMBOK / ITIL の実践ガイド](references/governance-and-service-management.md) を読む。
+4. ユーザーが別の機能を指定しない限り、blueprint の範囲を超えて認証、DB、デプロイ、UI ライブラリを導入しない。
 
 ## 実装方針
 
@@ -22,6 +23,7 @@ metadata:
 - 公開 TypeScript API には JSDoc を書き、TypeDoc の validation で抜けを検出する。
 - E2E は画面内容だけでなく、タスク追加の POST が期待どおり成功することを確認する。SSR 画面は hydration が済んだ状態を待ってからフォームを操作する。
 - コメント・比較資料・Mermaid 図は「なぜその差が生じるか」を説明し、コードの逐語的な繰り返しにしない。
+- 要件から受け入れ条件、設計、テスト、PR までを追跡できるようにする。変更では価値、品質、リスク、運用影響、ロールバックを明示する。
 
 ## 完了条件
 

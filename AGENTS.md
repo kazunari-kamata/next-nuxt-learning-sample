@@ -6,6 +6,8 @@
 
 新規にこのプロジェクトを構築する AI は、[再構築スキル](.agents/skills/next-nuxt-learning-sample/SKILL.md) を読み、必要に応じてその [blueprint](.agents/skills/next-nuxt-learning-sample/references/project-blueprint.md) を参照してください。
 
+プロジェクト計画、変更、運用に関わる作業では、[PMBOK / ITIL の実践ガイド](.agents/skills/next-nuxt-learning-sample/references/governance-and-service-management.md) も読みます。これは本プロジェクト向けに tailored した学習ガイドであり、公式な準拠や認定を主張するものではありません。
+
 ## 守ること
 
 - root の npm workspaces に `next-app` と `nuxt-app` を置く。両方とも TypeScript を使う。
@@ -17,6 +19,8 @@
 - 機能の対応、デバッグ、プロジェクトフローの資料を更新し、関係が分かりにくい処理には Mermaid 図を使う。
 - unit test は Vitest、利用者操作は Playwright で両アプリを検証する。SSR を使う画面の E2E は hydration 完了後に操作する。
 - CI は型検査、Vitest、TypeDoc、Playwright、production build、credential scan、production dependency audit を維持する。
+- 要件 ID、受け入れ条件、設計、テスト、PR を対応付け、変更の目的・影響・ロールバック方法を記録する。利用者価値、品質、リスク、関係者への影響をトレードオフとして扱う。
+- リリース後は CI 結果、障害・問い合わせ、脆弱性情報、利用者フィードバックを見直し、改善候補を要件へ戻す。重大な変更は、実施前に確認可能なロールバック手順を用意する。
 
 ## 作業と検証
 
