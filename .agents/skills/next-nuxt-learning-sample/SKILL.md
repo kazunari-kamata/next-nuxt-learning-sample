@@ -14,7 +14,8 @@ metadata:
 1. 対象リポジトリの `AGENTS.md`、`README.md`、既存の CI と package scripts を読む。
 2. 新規構築または大きな再構築では [project blueprint](references/project-blueprint.md) を読む。
 3. プロジェクト計画、サービス運用、リリース、継続的改善を扱う場合は [PMBOK / ITIL の実践ガイド](references/governance-and-service-management.md) を読む。
-4. ユーザーが別の機能を指定しない限り、blueprint の範囲を超えて認証、DB、デプロイ、UI ライブラリを導入しない。
+4. 見積もり、目標、進捗、リスク、変更統制、PM / PMO ロールを扱う場合は [PM / PMO playbook](references/project-management-playbook.md) を読む。
+5. ユーザーが別の機能を指定しない限り、blueprint の範囲を超えて認証、DB、デプロイ、UI ライブラリを導入しない。
 
 ## 実装方針
 
@@ -24,6 +25,7 @@ metadata:
 - E2E は画面内容だけでなく、タスク追加の POST が期待どおり成功することを確認する。SSR 画面は hydration が済んだ状態を待ってからフォームを操作する。
 - コメント・比較資料・Mermaid 図は「なぜその差が生じるか」を説明し、コードの逐語的な繰り返しにしない。
 - 要件から受け入れ条件、設計、テスト、PR までを追跡できるようにする。変更では価値、品質、リスク、運用影響、ロールバックを明示する。
+- PM / PMO ロールでは、見積もりを effort、duration、cost に分け、前提・不確実性・除外範囲を添える。実行前に確認が必要な予算、優先順位、外部連携、リリース承認はユーザーへ明示する。
 
 ## 完了条件
 

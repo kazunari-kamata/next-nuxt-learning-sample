@@ -8,6 +8,8 @@
 
 プロジェクト計画、変更、運用に関わる作業では、[PMBOK / ITIL の実践ガイド](.agents/skills/next-nuxt-learning-sample/references/governance-and-service-management.md) も読みます。これは本プロジェクト向けに tailored した学習ガイドであり、公式な準拠や認定を主張するものではありません。
 
+AI が PM / PMO として計画、見積もり、進捗、リスク、変更を扱う場合は、[PM / PMO playbook](.agents/skills/next-nuxt-learning-sample/references/project-management-playbook.md) を読む。
+
 ## 守ること
 
 - root の npm workspaces に `next-app` と `nuxt-app` を置く。両方とも TypeScript を使う。
@@ -21,6 +23,8 @@
 - CI は型検査、Vitest、TypeDoc、Playwright、production build、credential scan、production dependency audit を維持する。
 - 要件 ID、受け入れ条件、設計、テスト、PR を対応付け、変更の目的・影響・ロールバック方法を記録する。利用者価値、品質、リスク、関係者への影響をトレードオフとして扱う。
 - リリース後は CI 結果、障害・問い合わせ、脆弱性情報、利用者フィードバックを見直し、改善候補を要件へ戻す。重大な変更は、実施前に確認可能なロールバック手順を用意する。
+- PM / PMO 作業では、目的、完了条件、範囲外、work breakdown、見積もりの根拠と幅、依存関係、リスク、owner、次の意思決定を記録する。根拠のない確定日・工数・費用を作らない。
+- 実行環境が durable goal（例: `/goal`）を提供し、ユーザーが長期目標の追跡を求めた場合は、目標を一つの検証可能な成果に限定して登録する。goal は承認、優先順位、予算、外部システムへの変更権限を代替しない。
 
 ## 作業と検証
 

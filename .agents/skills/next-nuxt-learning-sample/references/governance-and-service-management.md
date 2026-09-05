@@ -1,6 +1,6 @@
 # PMBOK / ITIL を加味した実践ガイド
 
-この資料は、PMBOK と ITIL の考え方を、この小さな Next.js / Nuxt 学習プロジェクトへ過不足なく対応付けるためのものです。プロジェクトの規模に合わせて手法を tailer し、認定、公式な適合性、または特定の版への完全準拠を主張しません。
+この資料は、PMBOK と ITIL の考え方を、この小さな Next.js / Nuxt 学習プロジェクトへ過不足なく対応付けるためのものです。プロジェクトの規模に合わせて手法を tailored し、認定、公式な適合性、または特定の版への完全準拠を主張しません。
 
 PMBOK は価値提供、原則、パフォーマンスドメインを通してプロジェクトの成果を捉えます。ITIL はサービス価値、ガバナンス、継続的改善、組織・人、情報・技術、パートナー・サプライヤ、価値流れ・プロセスといった観点でサービスを捉えます。公式情報は [PMI の PMBOK Guide](https://www.pmi.org/standards/pmbok) と [PeopleCert の ITIL Foundation](https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1/itil-4-foundation-2565) を参照してください。
 
@@ -39,6 +39,8 @@ AI は機能や設定を変更する前後に、規模に応じて次を記録�
 3. **設計とリスク**: Next/Nuxt の対応、互換性、セキュリティ、データ、SSR/hydration、依存関係への影響は何か。
 4. **変更と検証**: branch と PR に目的、主要差分、実行した品質ゲート、失敗時の復旧方法を示す。
 5. **リリースと改善**: CI 成功だけで完了とせず、フィードバック、障害、脆弱性、利用状況を次の優先順位付けへ戻す。
+
+見積もり、目標、進捗、リスク、変更統制の具体的な扱いは [PM / PMO playbook](project-management-playbook.md) を参照する。
 
 ## このサンプルでの具体例
 

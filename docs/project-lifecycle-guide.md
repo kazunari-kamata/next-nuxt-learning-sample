@@ -75,6 +75,22 @@ flowchart LR
 
 要件の曖昧さを減らすには、「タスクを追加できる」のような文を、観察できる受け入れ条件に変換します。例えば FR-02 は Playwright の E2E テストとして自動化できます。
 
+### 見積もりと goal
+
+見積もりは、工数（effort）、経過時間（duration）、費用（cost）を混同しない予測です。費用は単価や予算が与えられたときだけ算出し、AI が推測で金額を作ることはしません。要件を work package に分解し、前提、依存関係、最良・最頻・最悪ケース、除外範囲、リスク対応を添えて範囲で示します。
+
+長期の initiative では、AI の durable goal（実行環境によっては `/goal`）を使い、Outcome、成功条件、scope / scope 外、制約、依存関係、リスク、承認者、次の milestone を一つの検証可能な目標として追跡します。goal は push、PR、merge、リリースの承認を自動的に与えるものではありません。詳しい PM / PMO の運用は [AI PM / PMO playbook](../.agents/skills/next-nuxt-learning-sample/references/project-management-playbook.md) を参照してください。
+
+```mermaid
+flowchart LR
+  Requirement[要件・受け入れ条件] --> WBS[work breakdown]
+  WBS --> Estimate[見積もり範囲・前提]
+  Estimate --> Goal[goal・milestone]
+  Goal --> Evidence[実装・品質証跡]
+  Evidence --> Status[差異・リスク・変更判断]
+  Status --> Estimate
+```
+
 ## 2. 基本設計（外部設計）
 
 基本設計では、要件を満たす責務の分け方、画面/API の境界、利用者から見える振る舞いを決めます。この時点では関数内部の細かな処理順より、全体構成を明確にします。

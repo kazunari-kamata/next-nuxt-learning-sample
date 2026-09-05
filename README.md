@@ -101,4 +101,4 @@ GitHub の Languages は**プログラミング言語**をファイル拡張子�
 
 ## AI による再構築
 
-AI エージェントに同じ構成・品質ゲートのプロジェクトを構築させる場合は、リポジトリの [AGENTS.md](AGENTS.md) と [再構築 skill](.agents/skills/next-nuxt-learning-sample/SKILL.md) を指示として渡してください。機能・構成・CI の具体的な基準は [blueprint](.agents/skills/next-nuxt-learning-sample/references/project-blueprint.md) にまとめています。
+AI エージェントに同じ構成・品質ゲートのプロジェクトを構築させる場合は、リポジトリの [AGENTS.md](AGENTS.md) と [再構築 skill](.agents/skills/next-nuxt-learning-sample/SKILL.md) を指示として渡してください。機能・構成・CI の具体的な基準は [blueprint](.agents/skills/next-nuxt-learning-sample/references/project-blueprint.md) に、PM / PMO としての goal・見積もり・進捗・変更統制は [AI PM / PMO playbook](.agents/skills/next-nuxt-learning-sample/references/project-management-playbook.md) にまとめています。
