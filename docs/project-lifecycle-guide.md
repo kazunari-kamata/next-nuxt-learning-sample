@@ -19,6 +19,27 @@ flowchart LR
 
 このサンプルでは、要件と設計の判断をコードまで追えるように、Next.js と Nuxt に同じ機能を実装しています。二つを比較すること自体が要件であり、片方だけに存在する機能を不用意に増やさないことも設計上の制約です。
 
+## PMBOK / ITIL の観点
+
+このガイドは、PMBOK の価値提供・原則・パフォーマンスドメインと、ITIL のサービス価値・ガバナンス・継続的改善の考え方を、学習用に軽量化して使います。認定や公式な準拠を目的とするものではありません。詳細な AI 向け対応付けは [PMBOK / ITIL の実践ガイド](../.agents/skills/next-nuxt-learning-sample/references/governance-and-service-management.md) を参照してください。
+
+| プロジェクトの場面 | PMBOK の観点 | ITIL の観点 | このサンプルで行うこと |
+| --- | --- | --- | --- |
+| 要件定義 | 利用者価値、関係者、範囲 | 価値共創、ガバナンス | 目的、受け入れ条件、対象外を定義する |
+| 設計・実装 | 品質、リスク、開発アプローチ | 情報・技術、価値流れ | Next/Nuxt の契約をそろえ、差分を資料化する |
+| PR・リリース | 測定、意思決定、不確実性 | 変更管理、保証 | テスト・CI・レビュー結果をマージ判断に使う |
+| 運用・改善 | 成果・価値の測定 | 継続的改善 | 問い合わせ、障害、脆弱性を次の要件に戻す |
+
+```mermaid
+flowchart LR
+  Stakeholder[学習者・利用者の価値] --> Requirement[要件・受け入れ条件]
+  Requirement --> Delivery[設計・実装・品質確認]
+  Delivery --> Change[PR・変更判断]
+  Change --> Service[利用・運用]
+  Service --> Improvement[継続的改善]
+  Improvement --> Stakeholder
+```
+
 ## 1. 要件定義
 
 まず「誰の、どの課題を、どの範囲で解決するか」を合意します。技術やファイル構成を先に決める段階ではありません。
@@ -53,6 +74,22 @@ flowchart LR
 | CON-01 | 学習の焦点 | 永続 DB、認証、マルチユーザー機能は扱わず、メモリ内 store を使う |
 
 要件の曖昧さを減らすには、「タスクを追加できる」のような文を、観察できる受け入れ条件に変換します。例えば FR-02 は Playwright の E2E テストとして自動化できます。
+
+### 見積もりと goal
+
+見積もりは、工数（effort）、経過時間（duration）、費用（cost）を混同しない予測です。費用は単価や予算が与えられたときだけ算出し、AI が推測で金額を作ることはしません。要件を work package に分解し、前提、依存関係、最良・最頻・最悪ケース、除外範囲、リスク対応を添えて範囲で示します。
+
+長期の initiative では、AI の durable goal（実行環境によっては `/goal`）を使い、Outcome、成功条件、scope / scope 外、制約、依存関係、リスク、承認者、次の milestone を一つの検証可能な目標として追跡します。goal は push、PR、merge、リリースの承認を自動的に与えるものではありません。詳しい PM / PMO の運用は [AI PM / PMO playbook](../.agents/skills/next-nuxt-learning-sample/references/project-management-playbook.md) を参照してください。
+
+```mermaid
+flowchart LR
+  Requirement[要件・受け入れ条件] --> WBS[work breakdown]
+  WBS --> Estimate[見積もり範囲・前提]
+  Estimate --> Goal[goal・milestone]
+  Goal --> Evidence[実装・品質証跡]
+  Evidence --> Status[差異・リスク・変更判断]
+  Status --> Estimate
+```
 
 ## 2. 基本設計（外部設計）
 
