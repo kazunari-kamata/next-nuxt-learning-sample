@@ -171,6 +171,53 @@ sequenceDiagram
   end
 ```
 
+### PATCH / DELETE の処理順（UML シーケンス図）
+
+更新と削除では、path parameter の `id` を検証してから store を呼びます。存在しない task は 404 とし、画面側は成功した操作だけを表示へ反映します。Next.js はレスポンスから React state を更新し、Nuxt は `refresh()` で一覧を同期する点が比較ポイントです。
+
+```mermaid
+sequenceDiagram
+  actor User as 利用者
+  participant UI as Client UI
+  participant API as PATCH / DELETE handler
+  participant Store as task store
+
+  User->>UI: 完了切替 または 削除
+  alt 更新
+    UI->>API: PATCH /api/tasks/:id { done }
+    API->>API: id と request body を検証
+    API->>Store: updateTask(id, update)
+    alt task が存在する
+      Store-->>API: updated Task
+      API-->>UI: 200 Task
+      alt Next.js
+        UI->>UI: setTasks で対象 task を置換
+      else Nuxt
+        UI->>API: refresh() → GET /api/tasks
+        API-->>UI: Task[]
+      end
+    else task が存在しない
+      API-->>UI: 404 error
+    end
+  else 削除
+    UI->>API: DELETE /api/tasks/:id
+    API->>API: id を検証
+    API->>Store: deleteTask(id)
+    alt task が存在する
+      Store-->>API: true
+      API-->>UI: 204 No Content
+      alt Next.js
+        UI->>UI: setTasks から対象 task を除去
+      else Nuxt
+        UI->>API: refresh() → GET /api/tasks
+        API-->>UI: Task[]
+      end
+    else task が存在しない
+      API-->>UI: 404 error
+    end
+  end
+```
+
 ### 設計レビューの観点
 
 - 画面コンポーネントが HTTP の細部やデータ保存方法に依存しすぎていないか。

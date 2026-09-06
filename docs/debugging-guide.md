@@ -78,4 +78,4 @@ sequenceDiagram
 
 Next.js は `DEBUG_SAMPLE=true` で Route Handler の GET/POST ログを出します。Nuxt は public debug mode が有効なときに Nitro handler のログを出します。
 
-デバッガを使う前後で `npm run test` を実行してください。Next.js の Route Handler は 3 件、Nuxt の task store は 2 件のテストで動作を固定しています。ブレークポイントで発見した変更は、まずテストとして再現してから実装すると安全です。
+デバッガを使う前後で `npm run test` を実行してください。Next.js の Route Handler は 8 件、Nuxt の task store は 5 件のテストで CRUD の動作を固定しています。ブレークポイントで発見した変更は、まずテストとして再現してから実装すると安全です。

@@ -46,6 +46,65 @@ flowchart LR
   end
 ```
 
+## UML で見る責務とデータ
+
+フローチャートは「どこへ進むか」を表すのに対し、UML はデータと責務の関係を表すのに向いています。次のクラス図では、HTTP の処理を受け持つ handler と、メモリ内のデータ操作を受け持つ store を分けています。二つのフレームワークでファイルの置き方は異なりますが、`Task` と CRUD 操作の責務は対応しています。
+
+```mermaid
+classDiagram
+  class Task {
+    +number id
+    +string title
+    +boolean done
+  }
+
+  class TaskUpdate {
+    +string title?
+    +boolean done?
+  }
+
+  class NextRouteHandler {
+    +GET() Response
+    +POST(request) Response
+    +PATCH(request, id) Response
+    +DELETE(id) Response
+  }
+
+  class NuxtNitroHandler {
+    +GET() Task[]
+    +POST(event) Task
+    +PATCH(event) Task
+    +DELETE(event) void
+  }
+
+  class TaskStore {
+    +listTasks() Task[]
+    +addTask(title) Task
+    +updateTask(id, update) Task?
+    +deleteTask(id) boolean
+  }
+
+  NextRouteHandler --> TaskStore : uses
+  NuxtNitroHandler --> TaskStore : uses
+  TaskStore --> Task : manages
+  TaskStore --> TaskUpdate : applies
+```
+
+対応する実装は Next.js では `app/api/tasks/route.ts` と `app/api/tasks/[id]/route.ts`、Nuxt では `server/api/tasks.*.ts` と `server/api/tasks/[id].*.ts` です。store は各アプリの `store.ts` / `tasks.ts` にあり、HTTP 固有の型を持ち込みません。
+
+## UML で見るタスクの状態
+
+`done` は UI 上の「完了にする」「未完了に戻す」を表す状態です。PATCH は title だけ、done だけ、または両方を部分更新できます。削除は状態を変更するのではなく、store から task を取り除く操作です。
+
+```mermaid
+stateDiagram-v2
+  [*] --> 未完了: POST で作成
+  未完了 --> 完了: PATCH { done: true }
+  完了 --> 未完了: PATCH { done: false }
+  未完了 --> [*]: DELETE
+  完了 --> [*]: DELETE
+```
+
 ## データ取得の違い
 
 Next.js は Client Component がマウントされた後、`useEffect` 内の `fetch('/api/tasks')` で一覧を取得します。追加した task は POST のレスポンスをそのまま `setTasks` へ加えます。
