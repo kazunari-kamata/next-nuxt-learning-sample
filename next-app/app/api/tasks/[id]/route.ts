@@ -4,16 +4,37 @@ import { deleteTask, updateTask } from '../store'
 type RouteContext = { params: Promise<{ id: string }> }
 type TaskUpdateBody = { title?: unknown; done?: unknown }
 
+/**
+ * Converts a dynamic route segment into the positive integer used by the store.
+ *
+ * @param value - The `[id]` parameter supplied by the App Router.
+ * @returns The validated ID, or undefined when the value is not a positive safe integer.
+ */
 function parseTaskId(value: string) {
   const id = Number(value)
   return Number.isSafeInteger(id) && id > 0 ? id : undefined
 }
 
+/**
+ * Emits dynamic-route request details while the explicit learning debug mode is enabled.
+ *
+ * @param message - A stable description of the PATCH or DELETE operation.
+ * @param context - Optional structured data for the server-side trace.
+ */
 function debugLog(message: string, context?: unknown) {
   if (process.env.DEBUG_SAMPLE === 'true') console.debug(`[Next API] ${message}`, context ?? '')
 }
 
-/** Updates an existing task for PATCH /api/tasks/:id. */
+/**
+ * Handles PATCH /api/tasks/:id as a partial update.
+ *
+ * The handler validates the route parameter and supplied fields before calling
+ * the store, so HTTP errors remain separate from domain-state operations.
+ *
+ * @param request - The JSON request containing title and/or done.
+ * @param context - App Router context that asynchronously exposes the dynamic ID.
+ * @returns A 200 JSON task, or a 400/404 JSON error.
+ */
 export async function PATCH(request: Request, { params }: RouteContext) {
   const id = parseTaskId((await params).id)
   if (!id) return NextResponse.json({ message: 'id must be a positive integer' }, { status: 400 })
@@ -37,7 +58,13 @@ export async function PATCH(request: Request, { params }: RouteContext) {
   return NextResponse.json(task)
 }
 
-/** Removes an existing task for DELETE /api/tasks/:id. */
+/**
+ * Handles DELETE /api/tasks/:id.
+ *
+ * @param _ - The unused request object; the operation needs only the route ID.
+ * @param context - App Router context that asynchronously exposes the dynamic ID.
+ * @returns A 204 empty response, or a 400/404 JSON error.
+ */
 export async function DELETE(_: Request, { params }: RouteContext) {
   const id = parseTaskId((await params).id)
   if (!id) return NextResponse.json({ message: 'id must be a positive integer' }, { status: 400 })

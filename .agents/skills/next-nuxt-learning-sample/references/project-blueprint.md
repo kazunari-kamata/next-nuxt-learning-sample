@@ -68,7 +68,7 @@ Next.js の `page.tsx` では Server Component と Client Component の分離を
 
 Vitest では Next.js の Route Handler（GET、POST、PATCH、DELETE、validation、404）と Nuxt の store（初期値、追加、更新、削除）を検証する。Playwright は Next.js と Nuxt の両方を実際に起動し、表示、作成、完了状態の更新、削除と各 HTTP status を確認する。
 
-TypeDoc は両 store を entry point とし、未文書化 API の validation warning を error とする。生成先の `docs/api/` は `.gitignore` に入れる。
+TypeDoc は両 store を entry point とし、未文書化 API の validation warning を error とする。公開 export に加えて、UI 操作、API handler、validation / debug helper などの名前付き関数には、責務、必要な引数・戻り値、比較のために重要なフレームワーク固有の判断を JSDoc で記載する。自明な短い callback の逐語的な説明は不要とする。生成先の `docs/api/` は `.gitignore` に入れる。
 
 GitHub Actions は pull request と `main` への push で次を実行する。
 

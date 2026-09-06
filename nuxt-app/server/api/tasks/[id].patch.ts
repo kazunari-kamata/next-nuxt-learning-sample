@@ -2,12 +2,23 @@ import { updateTask } from '../../utils/tasks'
 
 type TaskUpdateBody = { title?: unknown; done?: unknown }
 
+/**
+ * Converts a Nitro route parameter into the positive integer used by the store.
+ *
+ * @param value - The optional `[id]` parameter from the matched route.
+ * @returns The validated ID, or undefined when the parameter is invalid.
+ */
 function parseTaskId(value: string | undefined) {
   const id = Number(value)
   return Number.isSafeInteger(id) && id > 0 ? id : undefined
 }
 
-/** Updates an existing task for PATCH /api/tasks/:id. */
+/**
+ * Handles PATCH /api/tasks/:id as a partial update in Nitro.
+ *
+ * @param event - Nitro's request context, including the dynamic ID and JSON body.
+ * @returns The updated task, or throws a 400 validation error or 404 not-found error.
+ */
 export default defineEventHandler(async (event) => {
   const id = parseTaskId(getRouterParam(event, 'id'))
   if (!id) throw createError({ statusCode: 400, statusMessage: 'id must be a positive integer' })

@@ -21,7 +21,13 @@ export function TaskBoard() {
   const remaining = useMemo(() => tasks.filter((task) => !task.done).length, [tasks])
 
   useEffect(() => {
-    // 初回マウント後に Route Handler からデータを取得します。
+    /**
+     * Fetches the first task list after the component is mounted in the browser.
+     *
+     * A Server Component cannot own interactive state, so this client-side
+     * request makes the Next.js boundary visible for comparison with Nuxt's
+     * top-level `useFetch`.
+     */
     async function loadTasks() {
       setRequestStatus('loading')
       try {
@@ -38,6 +44,14 @@ export function TaskBoard() {
     void loadTasks()
   }, [])
 
+  /**
+   * Creates a task from the controlled form input.
+   *
+   * The POST response already contains the created task, so React can append
+   * it directly instead of fetching the complete list again.
+   *
+   * @param event - The form submission event whose default page navigation is prevented.
+   */
   async function addTask(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!title.trim()) return
@@ -61,6 +75,14 @@ export function TaskBoard() {
     }
   }
 
+  /**
+   * Toggles one task's completion state through the partial-update API.
+   *
+   * PATCH returns the authoritative task. Replacing only the matching entry
+   * demonstrates React's immutable state update pattern.
+   *
+   * @param task - The task displayed by the clicked completion button.
+   */
   async function updateTask(task: Task) {
     setRequestStatus('loading')
     try {
@@ -79,6 +101,11 @@ export function TaskBoard() {
     }
   }
 
+  /**
+   * Deletes one task and removes it from the local React state after a 204 response.
+   *
+   * @param task - The task displayed by the clicked delete button.
+   */
   async function deleteTask(task: Task) {
     setRequestStatus('loading')
     try {
