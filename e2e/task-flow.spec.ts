@@ -16,7 +16,7 @@ const applications = [
 ]
 
 for (const application of applications) {
-  test(`${application.name} adds a task through the browser`, async ({ page }) => {
+  test(`${application.name} completes the task CRUD flow through the browser`, async ({ page }) => {
     const title = `Playwright ${application.name} task ${Date.now()}`
 
     await page.goto(application.url)
@@ -27,7 +27,24 @@ for (const application of applications) {
       response.url().endsWith('/api/tasks') && response.request().method() === 'POST'
     ))
     await page.getByRole('button', { name: '追加' }).click()
-    await expect((await postResponse).status()).toBe(201)
-    await expect(page.getByText(title)).toBeVisible()
+    const createdResponse = await postResponse
+    expect(createdResponse.status()).toBe(201)
+    const createdTask = await createdResponse.json() as { id: number }
+    const taskItem = page.getByRole('listitem').filter({ hasText: title })
+    await expect(taskItem).toBeVisible()
+
+    const updateResponse = page.waitForResponse((response) => (
+      response.url().endsWith(`/api/tasks/${createdTask.id}`) && response.request().method() === 'PATCH'
+    ))
+    await taskItem.getByRole('button', { name: '完了にする' }).click()
+    expect((await updateResponse).status()).toBe(200)
+    await expect(taskItem).toContainText(`✓ ${title}`)
+
+    const deleteResponse = page.waitForResponse((response) => (
+      response.url().endsWith(`/api/tasks/${createdTask.id}`) && response.request().method() === 'DELETE'
+    ))
+    await taskItem.getByRole('button', { name: '削除' }).click()
+    expect((await deleteResponse).status()).toBe(204)
+    await expect(taskItem).toBeHidden()
   })
 }

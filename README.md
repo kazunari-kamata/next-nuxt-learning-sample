@@ -1,6 +1,6 @@
 # Next.js / Nuxt 学習用・比較サンプル
 
-同じ「タスク一覧」アプリを、**Next.js（React）** と **Nuxt（Vue）** で実装した比較用の最小モノレポです。両方とも TypeScript を使っています。
+同じ CRUD（作成・一覧取得・更新・削除）タスクアプリを、**Next.js（React）** と **Nuxt（Vue）** で実装した比較用の最小モノレポです。両方とも TypeScript を使っています。
 
 ## 起動
 
@@ -37,7 +37,7 @@ npm run docs:api
 
 生成先は `docs/api/` です。生成物は再作成可能なため Git には含めません。TypeDoc の対象は、両フレームワークで対応するメモリ内 task store です。
 
-Playwright は実際に Chromium を開き、Next.js と Nuxt の両画面でタスクを追加できることを確認します。初回だけブラウザ本体をインストールしてください。
+Playwright は実際に Chromium を開き、Next.js と Nuxt の両画面でタスクを作成・更新・削除できることを確認します。初回だけブラウザ本体をインストールしてください。
 
 ```bash
 npx playwright install chromium
@@ -82,14 +82,14 @@ GitHub の Languages は**プログラミング言語**をファイル拡張子�
 | UI の置き場所 | `next-app/app/page.tsx` | `nuxt-app/app/pages/index.vue` |
 | ルーティング | `app/` ディレクトリ | `pages/` ディレクトリ |
 | クライアント UI | `'use client'` を付けた React component | `<script setup lang="ts">` の Vue SFC |
-| API | `app/api/tasks/route.ts` の Route Handler | `server/api/tasks.*.ts` の Nitro handler |
+| API | `app/api/tasks/route.ts` / `[id]/route.ts` の Route Handler | `server/api/tasks.*.ts` / `[id].*.ts` の Nitro handler |
 | データ取得 | `fetch('/api/tasks')` | `useFetch('/api/tasks')` |
 | 画面の再描画 | React の `useState` | Vue の `ref` / `computed` |
 
 ## 学ぶ順番
 
 1. 両方の `page` を開き、テンプレート（JSX / Vue template）と状態の宣言を比較します。
-2. タスクを追加して、クライアントから API を呼ぶ箇所を比較します。
+2. タスクを追加し、完了状態を切り替え、削除して、クライアントから CRUD API を呼ぶ箇所を比較します。
 3. `route.ts` と `tasks.get.ts` / `tasks.post.ts` を比較し、バックエンド処理の置き場所を確認します。
 4. それぞれに詳細ページを追加して、動的ルート（Next: `[id]`、Nuxt: `[id].vue`）を試してください。
 

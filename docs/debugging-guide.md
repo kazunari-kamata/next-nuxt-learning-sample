@@ -23,7 +23,7 @@ flowchart TD
   Nuxt --> AttachNuxt[VS Code / Chrome で attach]
   AttachNext --> Breakpoint[Route Handler / store に breakpoint]
   AttachNuxt --> Breakpoint
-  Browser[ブラウザで画面更新・タスク追加] --> Breakpoint
+  Browser[ブラウザで画面更新・CRUD 操作] --> Breakpoint
   Browser --> Inspector[Debug mode: client state]
   Breakpoint --> Logs[ターミナルの API log]
 ```
@@ -33,8 +33,8 @@ flowchart TD
 環境変数を有効にすると、タスク一覧の下に `Debug mode: client state` が表示されます。次を順に観察してください。
 
 1. 初期表示後の `requestStatus` と `tasks`
-2. タスク追加中の `loading`
-3. 追加成功後の `success` と task 配列の変化
+2. タスクの追加・完了切替・削除中の `loading`
+3. 操作成功後の `success` と task 配列の変化
 
 Next.js は `NEXT_PUBLIC_DEBUG_MODE=true`、Nuxt は `NUXT_PUBLIC_DEBUG_MODE=true` を使います。`PUBLIC` が付く値はブラウザへ公開されるため、パスワードや API key を入れてはいけません。
 
@@ -45,9 +45,10 @@ Next.js は `NEXT_PUBLIC_DEBUG_MODE=true`、Nuxt は `NUXT_PUBLIC_DEBUG_MODE=tru
 | ブラウザからの取得 | `next-app/app/task-board.tsx` の `fetch` | `nuxt-app/app/pages/index.vue` の `$fetch` |
 | GET API | `next-app/app/api/tasks/route.ts` の `GET` | `nuxt-app/server/api/tasks.get.ts` |
 | POST API | 同じ `route.ts` の `POST` | `nuxt-app/server/api/tasks.post.ts` |
+| PATCH / DELETE API | `next-app/app/api/tasks/[id]/route.ts` | `nuxt-app/server/api/tasks/[id].patch.ts` / `[id].delete.ts` |
 | 状態変更 | `next-app/app/api/tasks/store.ts` の `addTask` | `nuxt-app/server/utils/tasks.ts` の `addTask` |
 
-API handler に breakpoint を置いた後、画面を更新またはタスクを追加してください。Next.js では HTTP メソッドごとの export に入り、Nuxt ではファイル名に対応する Nitro handler に入ることを確認できます。
+API handler に breakpoint を置いた後、画面を更新、タスクを追加、完了状態を切替、または削除してください。Next.js では HTTP メソッドごとの export に入り、Nuxt ではファイル名に対応する Nitro handler に入ることを確認できます。
 
 ## タスク追加をステップ実行する順番
 

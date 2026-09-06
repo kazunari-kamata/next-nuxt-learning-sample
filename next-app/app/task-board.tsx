@@ -61,6 +61,37 @@ export function TaskBoard() {
     }
   }
 
+  async function updateTask(task: Task) {
+    setRequestStatus('loading')
+    try {
+      const response = await fetch(`/api/tasks/${task.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ done: !task.done }),
+      })
+      if (!response.ok) throw new Error(`PATCH /api/tasks/${task.id} failed: ${response.status}`)
+      const updatedTask: Task = await response.json()
+      setTasks((current) => current.map((candidate) => candidate.id === updatedTask.id ? updatedTask : candidate))
+      setRequestStatus('success')
+    } catch (error) {
+      console.error(error)
+      setRequestStatus('error')
+    }
+  }
+
+  async function deleteTask(task: Task) {
+    setRequestStatus('loading')
+    try {
+      const response = await fetch(`/api/tasks/${task.id}`, { method: 'DELETE' })
+      if (!response.ok) throw new Error(`DELETE /api/tasks/${task.id} failed: ${response.status}`)
+      setTasks((current) => current.filter((candidate) => candidate.id !== task.id))
+      setRequestStatus('success')
+    } catch (error) {
+      console.error(error)
+      setRequestStatus('error')
+    }
+  }
+
   return (
     <section className="card">
       <h2>Client Component: TaskBoard</h2>
@@ -69,7 +100,15 @@ export function TaskBoard() {
         <button type="submit">追加</button>
       </form>
       <p>未完了: {remaining} 件</p>
-      <ul>{tasks.map((task) => <li key={task.id}>{task.done ? '✓' : '○'} {task.title}</li>)}</ul>
+      <ul>
+        {tasks.map((task) => (
+          <li key={task.id}>
+            {task.done ? '✓' : '○'} {task.title}
+            <button type="button" onClick={() => void updateTask(task)}>{task.done ? '未完了に戻す' : '完了にする'}</button>
+            <button type="button" onClick={() => void deleteTask(task)}>削除</button>
+          </li>
+        ))}
+      </ul>
       {debugMode && (
         <details className="debug-panel">
           <summary>Debug mode: client state</summary>

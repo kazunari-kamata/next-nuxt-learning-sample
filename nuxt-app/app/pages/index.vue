@@ -30,6 +30,30 @@ async function addTask() {
     requestStatus.value = 'error'
   }
 }
+
+async function updateTask(task: Task) {
+  requestStatus.value = 'loading'
+  try {
+    await $fetch(`/api/tasks/${task.id}`, { method: 'PATCH', body: { done: !task.done } })
+    await refresh()
+    requestStatus.value = 'success'
+  } catch (error) {
+    console.error(error)
+    requestStatus.value = 'error'
+  }
+}
+
+async function deleteTask(task: Task) {
+  requestStatus.value = 'loading'
+  try {
+    await $fetch(`/api/tasks/${task.id}`, { method: 'DELETE' })
+    await refresh()
+    requestStatus.value = 'success'
+  } catch (error) {
+    console.error(error)
+    requestStatus.value = 'error'
+  }
+}
 </script>
 
 <template>
@@ -44,7 +68,13 @@ async function addTask() {
         <button type="submit">追加</button>
       </form>
       <p>未完了: {{ remaining }} 件</p>
-      <ul><li v-for="task in tasks" :key="task.id">{{ task.done ? '✓' : '○' }} {{ task.title }}</li></ul>
+      <ul>
+        <li v-for="task in tasks" :key="task.id">
+          {{ task.done ? '✓' : '○' }} {{ task.title }}
+          <button type="button" @click="updateTask(task)">{{ task.done ? '未完了に戻す' : '完了にする' }}</button>
+          <button type="button" @click="deleteTask(task)">削除</button>
+        </li>
+      </ul>
       <details v-if="debugMode" class="debug-panel">
         <summary>Debug mode: client state</summary>
         <pre>{{ debugSnapshot }}</pre>
