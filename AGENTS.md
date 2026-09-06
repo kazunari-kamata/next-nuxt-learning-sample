@@ -14,8 +14,8 @@ AI が PM / PMO として計画、見積もり、進捗、リスク、変更を�
 
 - root の npm workspaces に `next-app` と `nuxt-app` を置く。両方とも TypeScript を使う。
 - Next.js は App Router、Nuxt は file-based pages と Nitro API を使う。
-- `GET /api/tasks` と `POST /api/tasks` の JSON 契約・検証・成功ステータスを両実装で一致させる。タスクは学習用のメモリ内 store に限定し、認証や DB を追加しない。
-- 公開する TypeScript の型・関数には JSDoc を付ける。TypeDoc の対象 store で未文書化 export があれば失敗にする。
+- `GET` / `POST /api/tasks` と `PATCH` / `DELETE /api/tasks/:id` の JSON 契約・検証・成功ステータスを両実装で一致させる。タスクは学習用のメモリ内 store に限定し、認証や DB を追加しない。
+- 公開する TypeScript の型・関数には JSDoc を付ける。さらに、アプリの名前付き関数（UI 操作、API handler、validation / debug helper を含む）には、責務、必要なら引数・戻り値、学習上重要なフレームワーク固有の判断を説明する JSDoc を付ける。自明な短い callback を逐語的に説明する必要はない。TypeDoc の対象 store で未文書化 export があれば失敗にする。
 - `npm run dev` は一つのターミナルで Next.js（3000）と Nuxt（3001）を同時起動し、`Ctrl+C` で両方を停止できる状態を維持する。
 - `npm run dev:debug` は Inspector port を競合させず両アプリを起動する。ブラウザ公開用の環境変数へ秘密情報を入れない。
 - 機能の対応、デバッグ、プロジェクトフローの資料を更新し、関係が分かりにくい処理には Mermaid 図を使う。

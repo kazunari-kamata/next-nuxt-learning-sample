@@ -59,9 +59,11 @@ flowchart LR
 | --- | --- | --- |
 | FR-01 | タスク一覧を表示する | 初期タスクが画面に表示される |
 | FR-02 | タスクを追加する | 空でないタイトルを入力して追加すると一覧に現れる |
-| FR-03 | API を比較できる | Next.js と Nuxt の GET / POST の実装箇所が資料から辿れる |
-| FR-04 | デバッグを学べる | Inspector と画面の debug mode を有効化できる |
-| FR-05 | API の型と責務を参照できる | `npm run docs:api` で TypeDoc を生成できる |
+| FR-03 | タスクを更新する | 完了状態を切り替えると両アプリで表示が更新される |
+| FR-04 | タスクを削除する | 削除後にタスクが一覧から消える |
+| FR-05 | API を比較できる | Next.js と Nuxt の CRUD 実装箇所が資料から辿れる |
+| FR-06 | デバッグを学べる | Inspector と画面の debug mode を有効化できる |
+| FR-07 | API の型と責務を参照できる | `npm run docs:api` で TypeDoc を生成できる |
 
 ### 非機能要件・制約
 
@@ -126,6 +128,8 @@ flowchart TB
 | --- | --- | --- | --- | --- | --- |
 | 一覧取得 | GET | `/api/tasks` | なし | `200` と `Task[]` | - |
 | タスク追加 | POST | `/api/tasks` | `{ "title": string }` | `201` と `Task` | 空文字なら `400` |
+| タスク更新 | PATCH | `/api/tasks/:id` | `{ "title"?: string, "done"?: boolean }` | `200` と `Task` | 不正入力は `400`、存在しない ID は `404` |
+| タスク削除 | DELETE | `/api/tasks/:id` | なし | `204` | 不正 ID は `400`、存在しない ID は `404` |
 
 `Task` は `id`、`title`、`done` を持ちます。実案件なら OpenAPI などの API 契約書も同じ段階で管理し、フロントエンドとバックエンドの合意点にします。
 
@@ -141,6 +145,7 @@ flowchart TB
 | 操作と状態 | `app/task-board.tsx` | `app/pages/index.vue` | 入力、一覧、通信状態を管理 |
 | GET API | `app/api/tasks/route.ts` の `GET` | `server/api/tasks.get.ts` | HTTP の読み取りを受ける |
 | POST API | 同 `POST` | `server/api/tasks.post.ts` | 入力を検証して作成する |
+| PATCH / DELETE API | `app/api/tasks/[id]/route.ts` | `server/api/tasks/[id].patch.ts` / `[id].delete.ts` | ID を基に更新・削除する |
 | ドメイン状態 | `app/api/tasks/store.ts` | `server/utils/tasks.ts` | HTTP/UI から独立した task 操作 |
 
 ### POST の処理順
@@ -163,6 +168,53 @@ sequenceDiagram
     Store-->>API: Task
     API-->>UI: 201 Task
     UI->>UI: 表示を更新
+  end
+```
+
+### PATCH / DELETE の処理順（UML シーケンス図）
+
+更新と削除では、path parameter の `id` を検証してから store を呼びます。存在しない task は 404 とし、画面側は成功した操作だけを表示へ反映します。Next.js はレスポンスから React state を更新し、Nuxt は `refresh()` で一覧を同期する点が比較ポイントです。
+
+```mermaid
+sequenceDiagram
+  actor User as 利用者
+  participant UI as Client UI
+  participant API as PATCH / DELETE handler
+  participant Store as task store
+
+  User->>UI: 完了切替 または 削除
+  alt 更新
+    UI->>API: PATCH /api/tasks/:id { done }
+    API->>API: id と request body を検証
+    API->>Store: updateTask(id, update)
+    alt task が存在する
+      Store-->>API: updated Task
+      API-->>UI: 200 Task
+      alt Next.js
+        UI->>UI: setTasks で対象 task を置換
+      else Nuxt
+        UI->>API: refresh() → GET /api/tasks
+        API-->>UI: Task[]
+      end
+    else task が存在しない
+      API-->>UI: 404 error
+    end
+  else 削除
+    UI->>API: DELETE /api/tasks/:id
+    API->>API: id を検証
+    API->>Store: deleteTask(id)
+    alt task が存在する
+      Store-->>API: true
+      API-->>UI: 204 No Content
+      alt Next.js
+        UI->>UI: setTasks から対象 task を除去
+      else Nuxt
+        UI->>API: refresh() → GET /api/tasks
+        API-->>UI: Task[]
+      end
+    else task が存在しない
+      API-->>UI: 404 error
+    end
   end
 ```
 
@@ -195,7 +247,7 @@ flowchart LR
 | --- | --- | --- |
 | 型検査 | `npm run typecheck` | TypeScript の型エラーがない |
 | 単体テスト | `npm run test` | store と Route Handler の仕様を固定できる |
-| ブラウザテスト | `npm run test:e2e` | 利用者操作で両アプリの追加フローが動く |
+| ブラウザテスト | `npm run test:e2e` | 利用者操作で両アプリの CRUD フローが動く |
 | API 資料 | `npm run docs:api` | JSDoc から API リファレンスを生成できる |
 | ビルド | `npm run build` | production build が通る |
 
@@ -207,7 +259,7 @@ CI は上記に加えて credential scan と production dependency の脆弱性�
 
 改善の練習として、次の順で変更してみてください。
 
-1. `done` を切り替える PATCH API を要件・受け入れ条件から追加する。
+1. PATCH / DELETE の validation や 404 を増やし、失敗時の API 契約を比較する。
 2. HTTP 契約と画面遷移を基本設計に追記する。
 3. Next.js と Nuxt それぞれの詳細設計・JSDoc を更新する。
 4. Vitest と Playwright に失敗しうるケースを先に追加する。

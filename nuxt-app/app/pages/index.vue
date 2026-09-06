@@ -16,6 +16,12 @@ onMounted(() => {
   isInteractive.value = true
 })
 
+/**
+ * Creates a task from the v-model input and synchronizes the SSR-backed list.
+ *
+ * Nuxt refreshes `useFetch` after a mutation instead of manually editing the
+ * local array, making its data-refresh approach comparable with Next.js.
+ */
 async function addTask() {
   if (!title.value.trim()) return
   // 更新後に useFetch の refresh を呼び、SSR と同じデータソースから一覧を更新します。
@@ -23,6 +29,40 @@ async function addTask() {
   try {
     await $fetch('/api/tasks', { method: 'POST', body: { title: title.value } })
     title.value = ''
+    await refresh()
+    requestStatus.value = 'success'
+  } catch (error) {
+    console.error(error)
+    requestStatus.value = 'error'
+  }
+}
+
+/**
+ * Toggles the selected task's completion state through PATCH, then refreshes the list.
+ *
+ * @param task - The task displayed by the clicked completion button.
+ */
+async function updateTask(task: Task) {
+  requestStatus.value = 'loading'
+  try {
+    await $fetch(`/api/tasks/${task.id}`, { method: 'PATCH', body: { done: !task.done } })
+    await refresh()
+    requestStatus.value = 'success'
+  } catch (error) {
+    console.error(error)
+    requestStatus.value = 'error'
+  }
+}
+
+/**
+ * Deletes the selected task through DELETE, then refreshes the SSR-backed list.
+ *
+ * @param task - The task displayed by the clicked delete button.
+ */
+async function deleteTask(task: Task) {
+  requestStatus.value = 'loading'
+  try {
+    await $fetch(`/api/tasks/${task.id}`, { method: 'DELETE' })
     await refresh()
     requestStatus.value = 'success'
   } catch (error) {
@@ -44,7 +84,13 @@ async function addTask() {
         <button type="submit">追加</button>
       </form>
       <p>未完了: {{ remaining }} 件</p>
-      <ul><li v-for="task in tasks" :key="task.id">{{ task.done ? '✓' : '○' }} {{ task.title }}</li></ul>
+      <ul>
+        <li v-for="task in tasks" :key="task.id">
+          {{ task.done ? '✓' : '○' }} {{ task.title }}
+          <button type="button" @click="updateTask(task)">{{ task.done ? '未完了に戻す' : '完了にする' }}</button>
+          <button type="button" @click="deleteTask(task)">削除</button>
+        </li>
+      </ul>
       <details v-if="debugMode" class="debug-panel">
         <summary>Debug mode: client state</summary>
         <pre>{{ debugSnapshot }}</pre>

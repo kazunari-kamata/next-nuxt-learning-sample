@@ -1,6 +1,11 @@
 import { addTask } from '../utils/tasks'
 
-/** Handles POST /api/tasks through Nuxt's file-based Nitro routing. */
+/**
+ * Handles POST /api/tasks through Nuxt's file-based Nitro routing.
+ *
+ * @param event - Nitro's request/response context used to read JSON and set status.
+ * @returns The created task with status 201, or throws a 400 error for a blank title.
+ */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ title?: string }>(event)
   const title = body?.title?.trim()

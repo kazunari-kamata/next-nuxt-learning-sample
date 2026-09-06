@@ -21,7 +21,13 @@ export function TaskBoard() {
   const remaining = useMemo(() => tasks.filter((task) => !task.done).length, [tasks])
 
   useEffect(() => {
-    // 初回マウント後に Route Handler からデータを取得します。
+    /**
+     * Fetches the first task list after the component is mounted in the browser.
+     *
+     * A Server Component cannot own interactive state, so this client-side
+     * request makes the Next.js boundary visible for comparison with Nuxt's
+     * top-level `useFetch`.
+     */
     async function loadTasks() {
       setRequestStatus('loading')
       try {
@@ -38,6 +44,14 @@ export function TaskBoard() {
     void loadTasks()
   }, [])
 
+  /**
+   * Creates a task from the controlled form input.
+   *
+   * The POST response already contains the created task, so React can append
+   * it directly instead of fetching the complete list again.
+   *
+   * @param event - The form submission event whose default page navigation is prevented.
+   */
   async function addTask(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!title.trim()) return
@@ -61,6 +75,50 @@ export function TaskBoard() {
     }
   }
 
+  /**
+   * Toggles one task's completion state through the partial-update API.
+   *
+   * PATCH returns the authoritative task. Replacing only the matching entry
+   * demonstrates React's immutable state update pattern.
+   *
+   * @param task - The task displayed by the clicked completion button.
+   */
+  async function updateTask(task: Task) {
+    setRequestStatus('loading')
+    try {
+      const response = await fetch(`/api/tasks/${task.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ done: !task.done }),
+      })
+      if (!response.ok) throw new Error(`PATCH /api/tasks/${task.id} failed: ${response.status}`)
+      const updatedTask: Task = await response.json()
+      setTasks((current) => current.map((candidate) => candidate.id === updatedTask.id ? updatedTask : candidate))
+      setRequestStatus('success')
+    } catch (error) {
+      console.error(error)
+      setRequestStatus('error')
+    }
+  }
+
+  /**
+   * Deletes one task and removes it from the local React state after a 204 response.
+   *
+   * @param task - The task displayed by the clicked delete button.
+   */
+  async function deleteTask(task: Task) {
+    setRequestStatus('loading')
+    try {
+      const response = await fetch(`/api/tasks/${task.id}`, { method: 'DELETE' })
+      if (!response.ok) throw new Error(`DELETE /api/tasks/${task.id} failed: ${response.status}`)
+      setTasks((current) => current.filter((candidate) => candidate.id !== task.id))
+      setRequestStatus('success')
+    } catch (error) {
+      console.error(error)
+      setRequestStatus('error')
+    }
+  }
+
   return (
     <section className="card">
       <h2>Client Component: TaskBoard</h2>
@@ -69,7 +127,15 @@ export function TaskBoard() {
         <button type="submit">追加</button>
       </form>
       <p>未完了: {remaining} 件</p>
-      <ul>{tasks.map((task) => <li key={task.id}>{task.done ? '✓' : '○'} {task.title}</li>)}</ul>
+      <ul>
+        {tasks.map((task) => (
+          <li key={task.id}>
+            {task.done ? '✓' : '○'} {task.title}
+            <button type="button" onClick={() => void updateTask(task)}>{task.done ? '未完了に戻す' : '完了にする'}</button>
+            <button type="button" onClick={() => void deleteTask(task)}>削除</button>
+          </li>
+        ))}
+      </ul>
       {debugMode && (
         <details className="debug-panel">
           <summary>Debug mode: client state</summary>

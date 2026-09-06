@@ -10,10 +10,10 @@
 │   └── app/
 │       ├── page.tsx
 │       ├── task-board.tsx
-│       └── api/tasks/{route.ts,store.ts}
+│       └── api/tasks/{route.ts,store.ts,[id]/route.ts}
 ├── nuxt-app/                 # Nuxt + Vue + TypeScript
 │   ├── app/pages/index.vue
-│   └── server/{api,utils}/
+│   └── server/{api,utils}/ # API includes tasks.get/post and [id].patch/delete
 ├── docs/
 │   ├── comparison-guide.md
 │   ├── debugging-guide.md
@@ -29,19 +29,21 @@ root `package.json` は workspaces を使い、`dev`、`dev:next`、`dev:nuxt`�
 
 ## 機能と API 契約
 
-学習対象はタスクの一覧・追加だけです。メモリ内の初期データを置き、サーバー再起動時に初期化されることを README に明記します。
+学習対象はタスクの CRUD です。メモリ内の初期データを置き、サーバー再起動時に初期化されることを README に明記します。
 
 | HTTP | path | request | success | validation failure |
 | --- | --- | --- | --- | --- |
 | GET | `/api/tasks` | なし | `200`, `Task[]` | なし |
 | POST | `/api/tasks` | `{ "title": string }` | `201`, `Task` | 空または空白のみなら `400` |
+| PATCH | `/api/tasks/:id` | `{ "title"?: string, "done"?: boolean }` | `200`, `Task` | 不正入力は `400`、未知の ID は `404` |
+| DELETE | `/api/tasks/:id` | なし | `204` | 不正 ID は `400`、未知の ID は `404` |
 
 ```ts
 /** A task returned by the sample API. */
 export type Task = { id: number; title: string; done: boolean }
 ```
 
-Next.js は `app/api/tasks/route.ts` の `GET` / `POST` named export で API を示す。Nuxt は `server/api/tasks.get.ts` と `tasks.post.ts` の Nitro handler で API を示す。どちらも HTTP 層をメモリ内 store の `listTasks` / `addTask` から分離する。
+Next.js は `app/api/tasks/route.ts` の `GET` / `POST` と `app/api/tasks/[id]/route.ts` の `PATCH` / `DELETE` named export で API を示す。Nuxt は `server/api/tasks.get.ts`、`tasks.post.ts`、`[id].patch.ts`、`[id].delete.ts` の Nitro handler で API を示す。どちらも HTTP 層をメモリ内 store の `listTasks` / `addTask` / `updateTask` / `deleteTask` から分離する。
 
 ## 比較する実装上の違い
 
@@ -50,7 +52,7 @@ Next.js は `app/api/tasks/route.ts` の `GET` / `POST` named export で API を
 | 画面 | `app/page.tsx` | `app/pages/index.vue` |
 | 操作 UI | `'use client'` を持つ `TaskBoard` | `<script setup lang="ts">` 内の状態と template |
 | 初期データ取得 | Client Component の `useEffect` と `fetch` | top-level `await useFetch` |
-| 更新表示 | POST response を React state に追加 | POST 後に `refresh()` で一覧を取得 |
+| 更新表示 | POST / PATCH response を React state に反映し、DELETE で除去 | 変更後に `refresh()` で一覧を取得 |
 | API routing | `route.ts` の HTTP method export | `.get.ts` / `.post.ts` の file name と `defineEventHandler` |
 
 Next.js の `page.tsx` では Server Component と Client Component の分離を分かるようにする。Nuxt の `index.vue` は SSR HTML の表示後に Vue hydration が完了するため、E2E 用に `onMounted` で操作可能状態を示す属性を持たせてもよい。
@@ -64,9 +66,9 @@ Next.js の `page.tsx` では Server Component と Client Component の分離を
 
 ## 品質ゲート
 
-Vitest では Next.js の Route Handler（GET、正常 POST、400 validation）と Nuxt の store（初期値、追加）を最低限検証する。Playwright は Next.js と Nuxt の両方を実際に起動し、表示、フォーム操作、POST の `201`、追加したタスクの表示を確認する。
+Vitest では Next.js の Route Handler（GET、POST、PATCH、DELETE、validation、404）と Nuxt の store（初期値、追加、更新、削除）を検証する。Playwright は Next.js と Nuxt の両方を実際に起動し、表示、作成、完了状態の更新、削除と各 HTTP status を確認する。
 
-TypeDoc は両 store を entry point とし、未文書化 API の validation warning を error とする。生成先の `docs/api/` は `.gitignore` に入れる。
+TypeDoc は両 store を entry point とし、未文書化 API の validation warning を error とする。公開 export に加えて、UI 操作、API handler、validation / debug helper などの名前付き関数には、責務、必要な引数・戻り値、比較のために重要なフレームワーク固有の判断を JSDoc で記載する。自明な短い callback の逐語的な説明は不要とする。生成先の `docs/api/` は `.gitignore` に入れる。
 
 GitHub Actions は pull request と `main` への push で次を実行する。
 
