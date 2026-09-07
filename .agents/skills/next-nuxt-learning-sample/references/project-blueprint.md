@@ -17,9 +17,10 @@
 ├── docs/
 │   ├── comparison-guide.md
 │   ├── debugging-guide.md
-│   └── project-lifecycle-guide.md
+│   ├── project-lifecycle-guide.md
+│   └── security-checks-guide.md
 ├── e2e/task-flow.spec.ts
-├── scripts/check-no-credentials.mjs
+├── scripts/check-no-credentials.mjs # tracked files の credential pattern scan（ESM）
 ├── playwright.config.ts
 ├── typedoc.json
 └── .github/workflows/ci.yml

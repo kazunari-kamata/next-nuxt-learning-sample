@@ -56,6 +56,12 @@ flowchart LR
 
 `npm run test:e2e` は必要に応じて二つの開発サーバーを起動し、テスト終了後に停止します。普段の開発サーバーを既に起動している場合は、それを再利用します。
 
+## Credential pattern scan
+
+`node scripts/check-no-credentials.mjs` は、Git 管理対象ファイルから代表的な token、private key、secret の代入形式を検出し、見つかれば失敗する軽量な安全性チェックです。GitHub Actions の `Check committed credentials` でも同じコマンドを実行します。
+
+この script が `.mjs` である理由、検出対象と対象外、実際の credential が露出したときの対応は [安全性チェックガイド](docs/security-checks-guide.md) を参照してください。
+
 ## デバッグ学習モード
 
 通常の開発サーバーのほかに、Node.js Inspector を有効にするコマンドを用意しています。Next.js は `9229`、Nuxt は `9230` を使うため、同時に起動できます。
