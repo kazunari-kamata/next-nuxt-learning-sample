@@ -19,6 +19,8 @@ flowchart LR
 
 このサンプルでは、要件と設計の判断をコードまで追えるように、Next.js と Nuxt に同じ機能を実装しています。二つを比較すること自体が要件であり、片方だけに存在する機能を不用意に増やさないことも設計上の制約です。
 
+計画の順序や dependency をガントチャートで、短い反復を Scrum で、継続的な task の流れを Kanban で学ぶには、[タスク管理と計画の学習ガイド](task-management-guide.md) を参照してください。図中の期間や WIP limit は学習用の例であり、実際の見積もりや承認済み計画ではありません。
+
 ## PMBOK / ITIL の観点
 
 このガイドは、PMBOK の価値提供・原則・パフォーマンスドメインと、ITIL のサービス価値・ガバナンス・継続的改善の考え方を、学習用に軽量化して使います。認定や公式な準拠を目的とするものではありません。詳細な AI 向け対応付けは [PMBOK / ITIL の実践ガイド](../.agents/skills/next-nuxt-learning-sample/references/governance-and-service-management.md) を参照してください。
