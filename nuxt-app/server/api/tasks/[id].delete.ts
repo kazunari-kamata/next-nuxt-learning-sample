@@ -1,10 +1,10 @@
 import { deleteTask } from '../../utils/tasks'
 
 /**
- * Converts a Nitro route parameter into the positive integer used by the store.
+ * Nitro の route parameter を store が使う正の整数へ変換します。
  *
- * @param value - The optional `[id]` parameter from the matched route.
- * @returns The validated ID, or undefined when the parameter is invalid.
+ * @param value - 一致した route から得る任意の `[id]` parameter。
+ * @returns 検証済みの ID。parameter が不正なら undefined。
  */
 function parseTaskId(value: string | undefined) {
   const id = Number(value)
@@ -12,10 +12,10 @@ function parseTaskId(value: string | undefined) {
 }
 
 /**
- * Handles DELETE /api/tasks/:id in Nitro.
+ * Nitro で DELETE /api/tasks/:id を処理します。
  *
- * @param event - Nitro's request context, including the dynamic ID and response status.
- * @returns Null with status 204, or throws a 400 validation error or 404 not-found error.
+ * @param event - dynamic ID と response status を含む Nitro の request context。
+ * @returns status 204 の null。検証失敗なら 400、見つからなければ 404 error を throw します。
  */
 export default defineEventHandler((event) => {
   const id = parseTaskId(getRouterParam(event, 'id'))

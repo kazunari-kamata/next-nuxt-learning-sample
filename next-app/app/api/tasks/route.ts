@@ -2,22 +2,22 @@ import { NextResponse } from 'next/server'
 import { addTask, listTasks } from './store'
 
 /**
- * Emits server-side request details only during the explicit learning debug mode.
+ * 明示的な学習用 debug mode のときだけ server-side request の詳細を出力します。
  *
- * Keeping this behind `DEBUG_SAMPLE` avoids logging normal requests while still
- * giving an Inspector or terminal user a trace of the Route Handler boundary.
+ * `DEBUG_SAMPLE` の配下に置くことで通常 request の log を避けつつ、Inspector または
+ * terminal の利用者へ Route Handler boundary の trace を提供します。
  *
- * @param message - A stable description of the HTTP operation.
- * @param context - Optional structured data that explains the operation result.
+ * @param message - HTTP operation を表す固定の説明。
+ * @param context - operation result を説明する任意の structured data。
  */
 function debugLog(message: string, context?: unknown) {
   if (process.env.DEBUG_SAMPLE === 'true') console.debug(`[Next API] ${message}`, context ?? '')
 }
 
 /**
- * Handles GET /api/tasks in the Next.js App Router.
+ * Next.js App Router で GET /api/tasks を処理します。
  *
- * @returns A 200 JSON response containing the current in-memory task list.
+ * @returns 現在のメモリ内 task 一覧を含む status 200 の JSON response。
  */
 export function GET() {
   // App Router の Route Handler は HTTP メソッド名を export して API を定義します。
@@ -27,10 +27,10 @@ export function GET() {
 }
 
 /**
- * Handles POST /api/tasks and validates the title before creating a task.
+ * POST /api/tasks を処理し、task 作成前に title を検証します。
  *
- * @param request - The HTTP request whose JSON body may contain a title.
- * @returns A 201 JSON task, or a 400 JSON error when the title is blank.
+ * @param request - title を含む可能性がある JSON body を持つ HTTP request。
+ * @returns status 201 の JSON task。title が空白なら status 400 の JSON error。
  */
 export async function POST(request: Request) {
   const body: { title?: string } = await request.json()

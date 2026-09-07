@@ -1,6 +1,6 @@
 import { TaskBoard } from './task-board'
 
-/** Renders the Server Component portion of the Next.js task page. */
+/** Next.js の task page における Server Component 部分を描画します。 */
 export default function Page() {
   return (
     <main>

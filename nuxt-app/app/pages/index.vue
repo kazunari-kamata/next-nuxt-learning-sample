@@ -17,10 +17,10 @@ onMounted(() => {
 })
 
 /**
- * Creates a task from the v-model input and synchronizes the SSR-backed list.
+ * v-model の入力から task を作成し、SSR で取得した一覧を同期します。
  *
- * Nuxt refreshes `useFetch` after a mutation instead of manually editing the
- * local array, making its data-refresh approach comparable with Next.js.
+ * Nuxt は mutation 後に local array を手作業で更新せず `useFetch` を refresh します。
+ * このため Next.js との data-refresh approach の違いを比較できます。
  */
 async function addTask() {
   if (!title.value.trim()) return
@@ -38,9 +38,9 @@ async function addTask() {
 }
 
 /**
- * Toggles the selected task's completion state through PATCH, then refreshes the list.
+ * 選択した task の完了状態を PATCH で切り替え、一覧を refresh します。
  *
- * @param task - The task displayed by the clicked completion button.
+ * @param task - クリックした完了切替 button が表示している task。
  */
 async function updateTask(task: Task) {
   requestStatus.value = 'loading'
@@ -55,9 +55,9 @@ async function updateTask(task: Task) {
 }
 
 /**
- * Deletes the selected task through DELETE, then refreshes the SSR-backed list.
+ * 選択した task を DELETE で削除し、SSR で取得した一覧を refresh します。
  *
- * @param task - The task displayed by the clicked delete button.
+ * @param task - クリックした削除 button が表示している task。
  */
 async function deleteTask(task: Task) {
   requestStatus.value = 'loading'
