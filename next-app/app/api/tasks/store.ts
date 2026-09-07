@@ -1,27 +1,27 @@
-/** A task returned by the sample API and rendered by both learning UIs. */
+/** サンプル API が返し、両方の学習用 UI が表示する task。 */
 export type Task = { id: number; title: string; done: boolean }
 
-/** Fields that can be changed independently by a PATCH request. */
+/** PATCH request で個別に変更できる field。 */
 export type TaskUpdate = { title?: string; done?: boolean }
 
 const initialTasks: Task[] = [{ id: 1, title: 'Next.js と Nuxt の対応を比べる', done: false }]
 let tasks = [...initialTasks]
 
 /**
- * Returns all tasks held by the in-memory learning store.
- * Replace this function with a database query in a production application.
+ * メモリ内の学習用 store に保持されている全 task を返します。
+ * production application では、この function を database query へ置き換えます。
  *
- * @returns The current task list for the running server process.
+ * @returns 実行中の server process における現在の task 一覧。
  */
 export function listTasks() {
   return tasks
 }
 
 /**
- * Adds a task independently from HTTP and UI concerns.
+ * HTTP と UI の関心事から独立して task を追加します。
  *
- * @param title - The already validated, non-empty task title.
- * @returns The newly created incomplete task.
+ * @param title - 検証済みで空ではない task title。
+ * @returns 新しく作成した未完了 task。
  */
 export function addTask(title: string): Task {
   const task = { id: Date.now(), title, done: false }
@@ -30,14 +30,14 @@ export function addTask(title: string): Task {
 }
 
 /**
- * Updates only the supplied fields of a task.
+ * task の指定された field だけを更新します。
  *
- * Undefined fields are deliberately left unchanged, which gives PATCH its
- * partial-update semantics rather than overwriting an omitted value.
+ * Undefined の field は意図的に変更せず、未指定の値を上書きしない PATCH の
+ * partial-update semantics を実現します。
  *
- * @param id - The task identifier to update.
- * @param update - The title and/or completion state to replace.
- * @returns The updated task, or undefined when no task has the ID.
+ * @param id - 更新する task identifier。
+ * @param update - 置き換える title および/または完了状態。
+ * @returns 更新済み task。該当 ID の task がなければ undefined。
  */
 export function updateTask(id: number, update: TaskUpdate): Task | undefined {
   let updatedTask: Task | undefined
@@ -57,10 +57,10 @@ export function updateTask(id: number, update: TaskUpdate): Task | undefined {
 }
 
 /**
- * Removes a task from the in-memory list.
+ * メモリ内一覧から task を削除します。
  *
- * @param id - The task identifier to remove.
- * @returns The removed task, or undefined when no task has the ID.
+ * @param id - 削除する task identifier。
+ * @returns 削除した task。該当 ID の task がなければ undefined。
  */
 export function deleteTask(id: number): Task | undefined {
   const task = tasks.find((candidate) => candidate.id === id)
@@ -71,10 +71,10 @@ export function deleteTask(id: number): Task | undefined {
 }
 
 /**
- * Restores the fixed initial data before an isolated test.
+ * 独立した test の前に固定の初期 data を復元します。
  *
- * This is intentionally test-only infrastructure: a production store would
- * instead isolate test data at its database or repository boundary.
+ * これは意図的に test 専用の infrastructure です。production store では
+ * database または repository boundary で test data を分離します。
  */
 export function resetTasksForTest() {
   tasks = [...initialTasks]

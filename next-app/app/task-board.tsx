@@ -8,10 +8,10 @@ type RequestStatus = 'idle' | 'loading' | 'success' | 'error'
 const debugMode = process.env.NEXT_PUBLIC_DEBUG_MODE === 'true'
 
 /**
- * Displays and updates tasks from the Next.js Route Handler.
+ * Next.js Route Handler から取得した task を表示・更新します。
  *
- * This Client Component deliberately contains hooks and browser events so that
- * they can be compared with the Vue component in the Nuxt sample.
+ * Vue component と比較できるよう、hooks と browser event は意図的にこの
+ * Client Component に置いています。
  */
 export function TaskBoard() {
   // 'use client' を宣言したこのコンポーネントだけで、React hooks とイベントを使えます。
@@ -22,11 +22,10 @@ export function TaskBoard() {
 
   useEffect(() => {
     /**
-     * Fetches the first task list after the component is mounted in the browser.
+     * component が browser に mount された後、最初の task 一覧を取得します。
      *
-     * A Server Component cannot own interactive state, so this client-side
-     * request makes the Next.js boundary visible for comparison with Nuxt's
-     * top-level `useFetch`.
+     * Server Component は interactive state を持てないため、この client-side
+     * request により Nuxt の top-level `useFetch` と比較する Next.js の境界を示します。
      */
     async function loadTasks() {
       setRequestStatus('loading')
@@ -45,12 +44,12 @@ export function TaskBoard() {
   }, [])
 
   /**
-   * Creates a task from the controlled form input.
+   * controlled form input から task を作成します。
    *
-   * The POST response already contains the created task, so React can append
-   * it directly instead of fetching the complete list again.
+   * POST response には作成済み task が含まれるため、React は一覧全体を再取得せず
+   * 直接 append できます。
    *
-   * @param event - The form submission event whose default page navigation is prevented.
+   * @param event - default の page navigation を止める form submission event。
    */
   async function addTask(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -76,12 +75,12 @@ export function TaskBoard() {
   }
 
   /**
-   * Toggles one task's completion state through the partial-update API.
+   * partial-update API を通じて一つの task の完了状態を切り替えます。
    *
-   * PATCH returns the authoritative task. Replacing only the matching entry
-   * demonstrates React's immutable state update pattern.
+   * PATCH は authoritative な task を返します。一致する entry だけを置き換えることで、
+   * React の immutable state update pattern を示します。
    *
-   * @param task - The task displayed by the clicked completion button.
+   * @param task - クリックした完了切替 button が表示している task。
    */
   async function updateTask(task: Task) {
     setRequestStatus('loading')
@@ -102,9 +101,9 @@ export function TaskBoard() {
   }
 
   /**
-   * Deletes one task and removes it from the local React state after a 204 response.
+   * 一つの task を削除し、204 response の後で local React state から除去します。
    *
-   * @param task - The task displayed by the clicked delete button.
+   * @param task - クリックした削除 button が表示している task。
    */
   async function deleteTask(task: Task) {
     setRequestStatus('loading')

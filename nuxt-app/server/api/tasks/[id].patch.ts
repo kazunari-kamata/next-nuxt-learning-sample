@@ -3,10 +3,10 @@ import { updateTask } from '../../utils/tasks'
 type TaskUpdateBody = { title?: unknown; done?: unknown }
 
 /**
- * Converts a Nitro route parameter into the positive integer used by the store.
+ * Nitro の route parameter を store が使う正の整数へ変換します。
  *
- * @param value - The optional `[id]` parameter from the matched route.
- * @returns The validated ID, or undefined when the parameter is invalid.
+ * @param value - 一致した route から得る任意の `[id]` parameter。
+ * @returns 検証済みの ID。parameter が不正なら undefined。
  */
 function parseTaskId(value: string | undefined) {
   const id = Number(value)
@@ -14,10 +14,10 @@ function parseTaskId(value: string | undefined) {
 }
 
 /**
- * Handles PATCH /api/tasks/:id as a partial update in Nitro.
+ * Nitro で PATCH /api/tasks/:id の部分更新を処理します。
  *
- * @param event - Nitro's request context, including the dynamic ID and JSON body.
- * @returns The updated task, or throws a 400 validation error or 404 not-found error.
+ * @param event - dynamic ID と JSON body を含む Nitro の request context。
+ * @returns 更新済み task。検証失敗なら 400、見つからなければ 404 error を throw します。
  */
 export default defineEventHandler(async (event) => {
   const id = parseTaskId(getRouterParam(event, 'id'))

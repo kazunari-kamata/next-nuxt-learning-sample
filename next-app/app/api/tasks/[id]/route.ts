@@ -5,10 +5,10 @@ type RouteContext = { params: Promise<{ id: string }> }
 type TaskUpdateBody = { title?: unknown; done?: unknown }
 
 /**
- * Converts a dynamic route segment into the positive integer used by the store.
+ * dynamic route segment を store が使う正の整数へ変換します。
  *
- * @param value - The `[id]` parameter supplied by the App Router.
- * @returns The validated ID, or undefined when the value is not a positive safe integer.
+ * @param value - App Router が渡す `[id]` parameter。
+ * @returns 検証済み ID。値が正の safe integer でなければ undefined。
  */
 function parseTaskId(value: string) {
   const id = Number(value)
@@ -16,24 +16,24 @@ function parseTaskId(value: string) {
 }
 
 /**
- * Emits dynamic-route request details while the explicit learning debug mode is enabled.
+ * 明示的な学習用 debug mode が有効な間、dynamic-route request の詳細を出力します。
  *
- * @param message - A stable description of the PATCH or DELETE operation.
- * @param context - Optional structured data for the server-side trace.
+ * @param message - PATCH または DELETE operation を表す固定の説明。
+ * @param context - server-side trace 用の任意の structured data。
  */
 function debugLog(message: string, context?: unknown) {
   if (process.env.DEBUG_SAMPLE === 'true') console.debug(`[Next API] ${message}`, context ?? '')
 }
 
 /**
- * Handles PATCH /api/tasks/:id as a partial update.
+ * PATCH /api/tasks/:id を partial update として処理します。
  *
- * The handler validates the route parameter and supplied fields before calling
- * the store, so HTTP errors remain separate from domain-state operations.
+ * handler は store の呼び出し前に route parameter と指定 field を検証します。
+ * これにより HTTP error を domain-state operation から分離します。
  *
- * @param request - The JSON request containing title and/or done.
- * @param context - App Router context that asynchronously exposes the dynamic ID.
- * @returns A 200 JSON task, or a 400/404 JSON error.
+ * @param request - title および/または done を含む JSON request。
+ * @param context - dynamic ID を非同期に公開する App Router context。
+ * @returns status 200 の JSON task、または status 400/404 の JSON error。
  */
 export async function PATCH(request: Request, { params }: RouteContext) {
   const id = parseTaskId((await params).id)
@@ -59,11 +59,11 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 }
 
 /**
- * Handles DELETE /api/tasks/:id.
+ * DELETE /api/tasks/:id を処理します。
  *
- * @param _ - The unused request object; the operation needs only the route ID.
- * @param context - App Router context that asynchronously exposes the dynamic ID.
- * @returns A 204 empty response, or a 400/404 JSON error.
+ * @param _ - 未使用の request object。この operation は route ID だけを使います。
+ * @param context - dynamic ID を非同期に公開する App Router context。
+ * @returns status 204 の空 response、または status 400/404 の JSON error。
  */
 export async function DELETE(_: Request, { params }: RouteContext) {
   const id = parseTaskId((await params).id)

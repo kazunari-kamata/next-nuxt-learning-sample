@@ -31,7 +31,7 @@ flowchart LR
     NCREATE --> NSTORE[store.ts<br/>CRUD functions]
     NSTORE -->|作成した task| NUI
     NUI -->|setTasks| NSTATE[React state]
-    NUI -->|PATCH / DELETE /api/tasks/:id| NMUTATE[[id]/route.ts<br/>PATCH / DELETE export]
+    NUI -->|PATCH / DELETE /api/tasks/:id| NMUTATE["[id]/route.ts<br/>PATCH / DELETE export"]
     NMUTATE --> NSTORE
   end
 
@@ -41,7 +41,7 @@ flowchart LR
     USTORE -->|201 response| UUI
     UUI -->|refresh| UGET[tasks.get.ts<br/>Nitro handler]
     UGET --> UUI
-    UUI -->|PATCH / DELETE /api/tasks/:id| UMUTATE[[id].patch/delete.ts<br/>Nitro handler]
+    UUI -->|PATCH / DELETE /api/tasks/:id| UMUTATE["[id].patch/delete.ts<br/>Nitro handler"]
     UMUTATE --> USTORE
   end
 ```
@@ -121,9 +121,9 @@ Nuxt の Nitro はファイル名で HTTP メソッドを決めます。`tasks.g
 flowchart TD
   Request[HTTP request] --> Choice{フレームワーク}
   Choice -->|Next.js| NextPath[app/api/tasks/route.ts]
-  NextPath --> NextMethod[GET / POST export<br/>[id]/route.ts: PATCH / DELETE]
-  Choice -->|Nuxt| NuxtPath[server/api/tasks.get.ts<br/>tasks.post.ts / [id].patch/delete.ts]
-  NuxtPath --> NuxtHandler[defineEventHandler<br/>tasks.* / [id].*]
+  NextPath --> NextMethod["GET / POST export<br/>[id]/route.ts: PATCH / DELETE"]
+  Choice -->|Nuxt| NuxtPath["server/api/tasks.get.ts<br/>tasks.post.ts / [id].patch/delete.ts"]
+  NuxtPath --> NuxtHandler["defineEventHandler<br/>tasks.* / [id].*"]
   NextMethod --> Store[task store]
   NuxtHandler --> Store
   Store --> Response[JSON response]

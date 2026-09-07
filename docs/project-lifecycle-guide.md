@@ -251,7 +251,7 @@ flowchart LR
 | API 資料 | `npm run docs:api` | JSDoc から API リファレンスを生成できる |
 | ビルド | `npm run build` | production build が通る |
 
-CI は上記に加えて credential scan と production dependency の脆弱性検査を実行します。ローカルで通っても、最終的なマージ判断は PR 上の CI 結果とレビューで行います。
+CI は上記に加えて credential scan と production dependency の脆弱性検査を実行します。credential scan は Git 管理対象の代表的な token / private key / secret 形式の混入を防ぐ軽量チェックであり、依存関係 audit とは対象が異なります。検出範囲と `.mjs` を使う理由は [安全性チェックガイド](security-checks-guide.md) を参照してください。ローカルで通っても、最終的なマージ判断は PR 上の CI 結果とレビューで行います。
 
 ## 5. リリースと運用・改善
 

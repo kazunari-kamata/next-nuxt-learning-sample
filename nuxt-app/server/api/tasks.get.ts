@@ -1,9 +1,9 @@
 import { listTasks } from '../utils/tasks'
 
 /**
- * Handles GET /api/tasks through Nuxt's file-based Nitro routing.
+ * Nuxt の file-based Nitro routing で GET /api/tasks を処理します。
  *
- * @returns The current in-memory task list, serialized by Nitro as a 200 JSON response.
+ * @returns Nitro が 200 の JSON response として直列化する、現在のメモリ内 task 一覧。
  */
 export default defineEventHandler((event) => {
   const tasks = listTasks()
